@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE generatorConfiguration PUBLIC 
+	"-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" 
+	"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+	<!-- 数据库驱动包位置 -->
+	<classPathEntry location="D:\zero\mysql-connector-java-5.1.16.jar" />
+	<context id="context">
+		<!-- 数据库链接URL、用户名、密码 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://localhost:3306/ti" userId="root" password="root" />
+		<!-- 生成模型的包名和位置 -->
+		<javaModelGenerator targetPackage="com.ywq.ti.entity" targetProject="ti/src/main/java" />
+		<!-- 生成的映射文件报名和位置 -->
+		<sqlMapGenerator targetPackage="com.ywq.ti.mapper" targetProject="ti/src/main/java" />
+		<javaClientGenerator targetPackage="com.ywq.ti.dao" targetProject="ti/src/main/java" type="XMLMAPPER"/>
+			
+		<!-- 要生成的那些表(更改tableName 和domainObjectName 就可以了) -->
+		<table schema="ti" tableName="bc_block" enableCountByExample="false"
+			enableUpdateByExample="false" enableDeleteByExample="false"
+			enableSelectByExample="false" selectByExampleQueryId="false" />
+	</context>
+</generatorConfiguration>  
