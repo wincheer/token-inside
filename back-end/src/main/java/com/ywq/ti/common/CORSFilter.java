@@ -13,6 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.annotation.Order;
 
+/**
+ * <b>版权信息 :</b> 2018，杨文清<br/>
+ * <b>功能描述 :</b> 解决客户端的跨域访问<br/>
+ * <b>版本历史 :</b> <br/>
+ * 杨文清 | 2018年5月22日 下午6:25:54 | 创建
+ */
 @Order(1)
 @WebFilter(filterName = "CorsFilter", urlPatterns = "/*")
 public class CORSFilter implements Filter {

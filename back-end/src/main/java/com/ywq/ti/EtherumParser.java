@@ -7,6 +7,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
+/**
+ * <b>版权信息 :</b> 2018，杨文清<br/>
+ * <b>功能描述 :</b> 解析以太坊区块链的交易<br/>
+ * <b>版本历史 :</b> <br/>
+ * 杨文清 | 2018年5月22日 下午6:28:19 | 创建
+ */
 public class EtherumParser implements ApplicationRunner{
 
 	private static final Logger log = LoggerFactory.getLogger(EtherumParser.class);
