@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ywq.ti.dao.BcCurrentBlockMapper">
+  <resultMap id="BaseResultMap" type="com.ywq.ti.entity.BcCurrentBlock">
+    <id column="bc_type" jdbcType="VARCHAR" property="bcType" />
+    <result column="block_number" jdbcType="BIGINT" property="blockNumber" />
+  </resultMap>
+
+  <select id="selectCurrentBlock" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from bc_current_block
+    where bc_type = #{bcType,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateCurrentBlock" parameterType="com.ywq.ti.entity.BcCurrentBlock">
+    update bc_current_block
+    set block_number = #{blockNumber,jdbcType=BIGINT}
+    where bc_type = #{bcType,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

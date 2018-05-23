@@ -49,12 +49,12 @@ public class Utils {
 		String tokenName = TxType.INVALID_ERC20TOKEN; // 无效的token标志
 		String symbol = null;
 		BigInteger totalSupply = BigInteger.valueOf(0);
-		BigInteger decimals = BigInteger.valueOf(0);
+		BigInteger decimals = BigInteger.valueOf(18);
 		try {
-			tokenName = token.name().send();
-			symbol = token.symbol().send();
 			totalSupply = token.totalSupply().send();
 			decimals = token.decimals().send();
+			tokenName = token.name().send();
+			symbol = token.symbol().send();
 		} catch (ContractCallException cce) {
 			log.info("当前地址不是有效的 ERC20 Token 合约：" + cce.getMessage());
 		} catch (Exception e) {
