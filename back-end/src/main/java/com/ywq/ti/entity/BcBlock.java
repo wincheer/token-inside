@@ -5,14 +5,14 @@ import java.util.Date;
 
 public class BcBlock {
 
-	private String hash; 
-    private Long number;
-    private String parentHash;
-    private String coinbase;
-    private Long difficulty;
+	private String hash; //块hash
+    private Long number; //块编号
+    private String parentHash; //父块hash
+    private String coinbase; //矿工地址
+    private Long difficulty; //难度
     private BigInteger gasLimit;
     private BigInteger gasUsed;
-    private Date timestamp;
+    private Date timestamp; //块打包时间
 
     public String getHash() {
         return hash;

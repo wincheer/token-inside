@@ -6,16 +6,16 @@ import java.util.Date;
 public class BcTransaction {
 
 	private String hash; //交易地址 长度66
-    private String blockHash; //块地址 长度66
-    private Long blockNumber;
+    private String blockHash; //块地址, 长度66
+    private Long blockNumber; //块编号
     private BigInteger gas;
     private BigInteger gasPrice;
-    private String sendAddress; //合约地址长度42
-    private String receiveAddress;
-    private BigInteger value;
-    private String data;
+    private String sendAddress; //发送方，合约地址长度42
+    private String receiveAddress;//接收方
+    private BigInteger value; //交易金额
+    private String data; //附加数据
     private Date timestamp;
-    private String txType;
+    private String txType; //交易类型
     
 	public String getHash() {
 		return hash;

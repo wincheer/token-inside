@@ -1,7 +1,5 @@
 package com.ywq.ti;
 
-import java.math.BigInteger;
-
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
