@@ -15,8 +15,8 @@ public interface BcTransactionMapper {
 	
 	List<BcTransaction> selectTransactionListPage(Map<String, Object> map);
 
-	void insertTransaction(BcTransaction transaction);
+	int insertTransaction(BcTransaction transaction);
 
-	void insertTransactionBatch(List<BcTransaction> transactionList);
+	int insertTransactionBatch(List<BcTransaction> transactionList);
 	
 }

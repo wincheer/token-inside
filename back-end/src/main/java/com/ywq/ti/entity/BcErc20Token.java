@@ -8,9 +8,9 @@ public class BcErc20Token {
     private String tokenName; //名称
     private String symbol; // 标志
     private BigInteger totalSupply; //发行总量
-    private Long decimals; //小数点
-    private Long holders; //持有人总数量
-    private Long transfers; //交易总数量
+    private long decimals; //小数点
+    private long holders; //持有人总数量
+    private long transfers; //交易总数量
     
 	public String getTokenAddress() {
 		return tokenAddress;
@@ -36,22 +36,22 @@ public class BcErc20Token {
 	public void setTotalSupply(BigInteger totalSupply) {
 		this.totalSupply = totalSupply;
 	}
-	public Long getDecimals() {
+	public long getDecimals() {
 		return decimals;
 	}
-	public void setDecimals(Long decimals) {
+	public void setDecimals(long decimals) {
 		this.decimals = decimals;
 	}
-	public Long getHolders() {
+	public long getHolders() {
 		return holders;
 	}
-	public void setHolders(Long holders) {
+	public void setHolders(long holders) {
 		this.holders = holders;
 	}
-	public Long getTransfers() {
+	public long getTransfers() {
 		return transfers;
 	}
-	public void setTransfers(Long transfers) {
+	public void setTransfers(long transfers) {
 		this.transfers = transfers;
 	}
 

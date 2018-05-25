@@ -61,6 +61,7 @@ public class Utils {
 			log.error("载入合约异常：" + e.getMessage());
 		}
 
+		erc20Token.setTokenAddress(tokenAddress);
 		erc20Token.setTokenName(tokenName);
 		erc20Token.setSymbol(symbol);
 		erc20Token.setTotalSupply(totalSupply);

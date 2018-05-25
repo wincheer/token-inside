@@ -13,8 +13,10 @@ public interface BcErc20TokenMapper {
 	
 	List<BcErc20Token> selectTokenListPage(Map<String,Object> param);
     
-	void insertToken(BcErc20Token token);
+	int insertToken(BcErc20Token token);
+	
+	int insertTokenBatch(List<BcErc20Token> tokenList);
     
-	void updateToken(BcErc20Token token);
+	int updateToken(BcErc20Token token);
 	
 }

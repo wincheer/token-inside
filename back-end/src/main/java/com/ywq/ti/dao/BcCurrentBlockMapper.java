@@ -4,8 +4,8 @@ import com.ywq.ti.entity.BcCurrentBlock;
 
 public interface BcCurrentBlockMapper {
 
-    BcCurrentBlock selectCurrentBlock(String bcType);
-    
+	BcCurrentBlock selectCurrentBlock(String bcType);
+
     int updateCurrentBlock(BcCurrentBlock record);
     
 }

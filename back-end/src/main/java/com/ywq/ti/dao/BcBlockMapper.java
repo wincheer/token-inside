@@ -15,6 +15,6 @@ public interface BcBlockMapper {
     
     List<BcBlock> selectBlockListPage(Map<String,Object> param);
     
-    void insertBlock(BcBlock block);
+    int insertBlock(BcBlock block);
     
 }

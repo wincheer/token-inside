@@ -15,8 +15,8 @@ public interface BcErc20TransactionMapper {
 	
 	List<BcErc20Transaction> selectErc20TransactionListPage(Map<String, Object> map);
 
-	void insertErc20Transaction(BcErc20Transaction transaction);
+	int insertErc20Transaction(BcErc20Transaction transaction);
 
-	void insertErc20TransactionBatch(List<BcErc20Transaction> transactionList);
+	int insertErc20TransactionBatch(List<BcErc20Transaction> transactionList);
 	
 }

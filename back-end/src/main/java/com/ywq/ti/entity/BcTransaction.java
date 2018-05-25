@@ -7,7 +7,7 @@ public class BcTransaction {
 
 	private String hash; //交易地址 长度66
     private String blockHash; //块地址, 长度66
-    private Long blockNumber; //块编号
+    private long blockNumber; //块编号
     private BigInteger gas;
     private BigInteger gasPrice;
     private String sendAddress; //发送方，合约地址长度42
@@ -33,11 +33,11 @@ public class BcTransaction {
 		this.blockHash = blockHash;
 	}
 	
-	public Long getBlockNumber() {
+	public long getBlockNumber() {
 		return blockNumber;
 	}
 	
-	public void setBlockNumber(Long blockNumber) {
+	public void setBlockNumber(long blockNumber) {
 		this.blockNumber = blockNumber;
 	}
 	

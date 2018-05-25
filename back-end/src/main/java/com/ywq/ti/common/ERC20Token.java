@@ -4,10 +4,19 @@ import java.math.BigInteger;
 
 public class ERC20Token {
 
+	private String tokenAddress; //代币合约地址
 	private String tokenName; //代币名称
 	private String symbol; //标志
 	private BigInteger totalSupply; //总发行量
 	private BigInteger decimals; //小数点
+
+	public String getTokenAddress() {
+		return tokenAddress;
+	}
+
+	public void setTokenAddress(String tokenAddress) {
+		this.tokenAddress = tokenAddress;
+	}
 
 	public String getTokenName() {
 		return tokenName;

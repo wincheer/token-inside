@@ -8,6 +8,8 @@ package com.ywq.ti.common;
  */
 public class TxType {
 	
+	// 区块链名称
+	public final static String ETH = "ETH";
 	// 无效的 Token名
 	public final static String INVALID_ERC20TOKEN = "invalid_erc20_token";
 	// 区块链交易类型

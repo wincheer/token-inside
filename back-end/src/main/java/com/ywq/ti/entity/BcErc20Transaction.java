@@ -8,7 +8,7 @@ public class BcErc20Transaction {
     private String txHash; //交易hash
     private String tokenAddress;  //代币地址
     private String blockHash; //块hash
-    private Long blockNumber; //块编号
+    private long blockNumber; //块编号
     private BigInteger gas; 
     private BigInteger gasPrice;
     private String sendAddress; //发送方
@@ -34,10 +34,10 @@ public class BcErc20Transaction {
 	public void setBlockHash(String blockHash) {
 		this.blockHash = blockHash;
 	}
-	public Long getBlockNumber() {
+	public long getBlockNumber() {
 		return blockNumber;
 	}
-	public void setBlockNumber(Long blockNumber) {
+	public void setBlockNumber(long blockNumber) {
 		this.blockNumber = blockNumber;
 	}
 	public BigInteger getGas() {

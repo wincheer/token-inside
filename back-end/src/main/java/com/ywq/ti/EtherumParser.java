@@ -12,6 +12,7 @@ import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.http.HttpService;
 
+import com.ywq.ti.common.TxType;
 import com.ywq.ti.servie.EthBcSrvice;
 
 /**
@@ -37,7 +38,7 @@ public class EtherumParser implements ApplicationRunner{
 		 
 		Long maxBlockBumber = (web3j.ethBlockNumber().send().getBlockNumber()).longValue();//最新的区块高度
 		log.info("最新区块高度：" + maxBlockBumber);
-		long currentBlockNumber = service.currentBlockNumber("ETH"); // 读取待处理block编号
+		long currentBlockNumber = service.currentBlockNumber(TxType.ETH).getBlockNumber(); // 读取待处理block编号
 		log.info("待已处理区块：" + currentBlockNumber);
 		
 		while (currentBlockNumber <= maxBlockBumber) {
@@ -45,7 +46,7 @@ public class EtherumParser implements ApplicationRunner{
 			DefaultBlockParameter blockParam = new DefaultBlockParameterNumber(currentBlockNumber);
 			Block currentBlock = web3j.ethGetBlockByNumber(blockParam, true).send().getResult();
 			//处理当前区块
-			service.handleBlock(currentBlock);
+			service.handleBlock(web3j,currentBlock);
 			log.info("已处理区块：" + currentBlockNumber);
 			
 			currentBlockNumber++;

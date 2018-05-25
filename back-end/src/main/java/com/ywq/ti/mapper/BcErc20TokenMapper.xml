@@ -51,6 +51,15 @@
     	(#{tokenAddress,jdbcType=VARCHAR}, #{tokenName,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}, #{totalSupply,jdbcType=BIGINT}, #{decimals,jdbcType=BIGINT}, #{holders,jdbcType=BIGINT}, #{transfers,jdbcType=BIGINT})
   </insert>
   
+  <insert id="insertTokenBatch" useGeneratedKeys="false" keyProperty="tokenAddress" parameterType="java.util.List">
+    insert into bc_erc20_token 
+    	(token_address, token_name, symbol, total_supply, decimals, holders,transfers)
+    values 
+	  <foreach collection="list" item="item" index="index" separator="," >  
+	      (#{item.tokenAddress,jdbcType=VARCHAR}, #{item.tokenName,jdbcType=VARCHAR}, #{item.symbol,jdbcType=VARCHAR}, #{item.totalSupply,jdbcType=BIGINT}, #{item.decimals,jdbcType=BIGINT}, #{item.holders,jdbcType=BIGINT}, #{item.transfers,jdbcType=BIGINT})
+	  </foreach>  
+  </insert>
+  
   <update id="updateToken" parameterType="com.ywq.ti.entity.BcErc20Token">
     update bc_erc20_token
     <set>
