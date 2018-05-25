@@ -13,7 +13,7 @@ import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.http.HttpService;
 
 import com.ywq.ti.common.TxType;
-import com.ywq.ti.servie.EthBcSrvice;
+import com.ywq.ti.service.EthBcService;
 
 /**
  * <b>版权信息 :</b> 2018，杨文清<br/>
@@ -29,7 +29,7 @@ public class EtherumParser implements ApplicationRunner{
 	private String WEB3_CLIENT_URL;
 	
 	@Autowired
-	private EthBcSrvice service;
+	private EthBcService service;
 	
 	@Override
 	public void run(ApplicationArguments arg) throws Exception {
@@ -43,8 +43,11 @@ public class EtherumParser implements ApplicationRunner{
 		
 		while (currentBlockNumber <= maxBlockBumber) {
 			//待处理block
+			Long t0 = System.currentTimeMillis();
 			DefaultBlockParameter blockParam = new DefaultBlockParameterNumber(currentBlockNumber);
 			Block currentBlock = web3j.ethGetBlockByNumber(blockParam, true).send().getResult();
+			Long t1 = System.currentTimeMillis();
+			System.out.println("Web3读区块: " + currentBlock.getNumber() +"耗时(毫秒) = " + (t1-t0));
 			//处理当前区块
 			service.handleBlock(web3j,currentBlock);
 			log.info("已处理区块：" + currentBlockNumber);

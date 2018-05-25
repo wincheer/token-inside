@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.Bean;
 
 @ServletComponentScan
 @MapperScan(basePackages = "com.ywq.ti.dao")
@@ -14,8 +15,8 @@ public class TokenInsideApplication {
 		SpringApplication.run(TokenInsideApplication.class, args);
 	}
 	
-//	@Bean
-//    public EtherumParser startupRunner(){
-//        return new EtherumParser();
-//    }
+	@Bean
+    public EtherumParser startupRunner(){
+        return new EtherumParser();
+    }
 }

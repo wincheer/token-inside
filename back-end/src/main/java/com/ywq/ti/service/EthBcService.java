@@ -1,4 +1,4 @@
-package com.ywq.ti.servie;
+package com.ywq.ti.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import com.ywq.ti.entity.BcTransaction;
 
 @Service
 @Transactional
-public class EthBcSrvice {
+public class EthBcService {
 
 	@Autowired
 	private BcCurrentBlockMapper currentBlockDao;
@@ -98,9 +98,12 @@ public class EthBcSrvice {
 		}
 		// 持久化block、txList、token、tokenTxList
 		blockDao.insertBlock(block);
-		txDao.insertTransactionBatch(txList);
-		tokenDao.insertTokenBatch(tokenList);
-		tokenTxDao.insertErc20TransactionBatch(tokenTxList);
+		if (!txList.isEmpty())
+			txDao.insertTransactionBatch(txList);
+		if (!tokenList.isEmpty())
+			tokenDao.insertTokenBatch(tokenList);
+		if (!tokenTxList.isEmpty())
+			tokenTxDao.insertErc20TransactionBatch(tokenTxList);
 		//更新待处理block_number
 		BcCurrentBlock _currentBlock = new BcCurrentBlock();
 		_currentBlock.setBcType(TxType.ETH);
@@ -108,7 +111,7 @@ public class EthBcSrvice {
 		currentBlockDao.updateCurrentBlock(_currentBlock);
 		
 		Long t1 = System.currentTimeMillis();
-		System.out.println("处理区块: " + currentBlock.getNumber() +"耗时(毫秒) = " + (t1-t0));
+		System.out.println("DB 处理区块: " + currentBlock.getNumber() +"耗时(毫秒) = " + (t1-t0));
 	}
 	
 
