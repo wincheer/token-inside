@@ -32,7 +32,7 @@
 	</trim>
   </select>
   
-  <select id="totalBlocks" parameterType="java.util.Map" resultMap="java.lang.Long">
+  <select id="totalBlocks" parameterType="java.util.Map" resultType="java.lang.Long">
     select count(*) from bc_block
     where 1==1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">

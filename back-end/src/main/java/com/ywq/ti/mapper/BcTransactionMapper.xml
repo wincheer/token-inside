@@ -38,7 +38,7 @@
 	</trim>
   </select>
   
-  <select id="totalTransactions" parameterType="java.util.Map" resultMap="java.lang.Long">
+  <select id="totalTransactions" parameterType="java.util.Map" resultType="java.lang.Long">
     select count(*) from bc_transaction
     where 1==1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">

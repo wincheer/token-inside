@@ -17,7 +17,7 @@
     where token_address = #{tokenAddress,jdbcType=VARCHAR}
   </select>
   
-  <select id="totalTokens" parameterType="java.util.Map" resultMap="java.lang.Long">
+  <select id="totalTokens" parameterType="java.util.Map" resultType="java.lang.Long">
     select count(*) from bc_erc20_token
     where 1==1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
