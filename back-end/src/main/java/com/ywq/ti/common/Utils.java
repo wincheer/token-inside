@@ -27,7 +27,7 @@ public class Utils {
 	public static ERC20TokenData DecodeErc20Data(String data) {
 
 		ERC20TokenData erc20Data = new ERC20TokenData();
-
+		//ERC20标准的transfer函数的指令hash前8字节为(0x)a9059cbb
 		erc20Data.setToAddress(data.substring(10, 74));
 		erc20Data.setValue(new BigInteger(data.substring(74)));
 

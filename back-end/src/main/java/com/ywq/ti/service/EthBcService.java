@@ -70,7 +70,8 @@ public class EthBcService {
 			tx.setTimestamp(block.getTimestamp());
 			if (tx.getReceiveAddress() == null) {
 				// 交易：创建智能合约
-				tx.setTxType(TxType.CREATE_CONTRACT);				
+				tx.setTxType(TxType.CREATE_CONTRACT);
+				tx.setReceiveAddress("");
 				TransactionReceipt txr = web3j.ethGetTransactionReceipt(tx.getHash()).send().getResult();
 				ERC20Token token = Utils.getTokenInfo(web3j, txr.getContractAddress());
 				if (token.isValid()) {
@@ -81,7 +82,9 @@ public class EthBcService {
 			} else {
 				DefaultBlockParameterNumber blockParam = new DefaultBlockParameterNumber(tx.getBlockNumber());
 				String code = web3j.ethGetCode(tx.getReceiveAddress(), blockParam).send().getResult();
-				if(code==null || code.trim().equals("")){
+				//TODO 检查一下code到底是啥
+				System.out.println("=====================   CODE is " + code + "   =====================");
+				if(code.trim().equals("0x")){
 					//以太币转账
 					tx.setTxType(TxType.ETHER_TRANSFER);					
 				} else{
