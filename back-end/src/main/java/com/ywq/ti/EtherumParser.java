@@ -10,9 +10,9 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameter;
 import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
-import org.web3j.protocol.http.HttpService;
 
 import com.ywq.ti.common.TxType;
+import com.ywq.ti.common.Web3jConfig;
 import com.ywq.ti.service.EthBcService;
 
 /**
@@ -34,7 +34,9 @@ public class EtherumParser implements ApplicationRunner{
 	@Override
 	public void run(ApplicationArguments arg) throws Exception {
 		
-		Web3j web3j = Web3j.build(new HttpService(WEB3_CLIENT_URL));
+		Web3jConfig web3jConfig = new Web3jConfig();
+		Web3j web3j = Web3j.build(web3jConfig.buildService(WEB3_CLIENT_URL));
+		//Web3j web3j = Web3j.build(new HttpService(WEB3_CLIENT_URL));
 		 
 		Long maxBlockBumber = (web3j.ethBlockNumber().send().getBlockNumber()).longValue();//最新的区块高度
 		log.info("最新区块高度：" + maxBlockBumber);

@@ -52,6 +52,17 @@
 			<version>1.58</version>
 		</dependency>
 	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>nexus-aliyun</id>
+			<url>http://maven.aliyun.com/nexus/content/groups/public</url>
+		</repository>
+		<repository>
+			<id>eth</id>
+			<url>http://repo1.maven.apache.org/maven2/</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<resources>
