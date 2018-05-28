@@ -6,7 +6,7 @@
     <id column="token_address" jdbcType="VARCHAR" property="tokenAddress" />
     <result column="token_name" jdbcType="VARCHAR" property="tokenName" />
     <result column="symbol" jdbcType="VARCHAR" property="symbol" />
-    <result column="total_supply" jdbcType="BIGINT" property="totalSupply" />
+    <result column="total_supply" jdbcType="VARCHAR" property="totalSupply" />
     <result column="decimals" jdbcType="BIGINT" property="decimals" />
     <result column="holders" jdbcType="BIGINT" property="holders" />
     <result column="transfers" jdbcType="BIGINT" property="transfers" />
@@ -23,7 +23,7 @@
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="tokenName != null">token_name = #{tokenName,jdbcType=VARCHAR} and </if>
       <if test="symbol != null">symbol = #{symbol,jdbcType=VARCHAR} and </if>
-      <if test="totalSupply != null">total_supply = #{totalSupply,jdbcType=BIGINT} and </if>
+      <if test="totalSupply != null">total_supply = #{totalSupply,jdbcType=VARCHAR} and </if>
       <if test="decimals != null">decimals = #{decimals,jdbcType=BIGINT} and </if>
       <if test="holders != null">holders = #{holders,jdbcType=BIGINT} and </if>
       <if test="transfers != null">transfers = #{transfers,jdbcType=BIGINT} and </if>
@@ -36,7 +36,7 @@
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="tokenName != null">token_name = #{tokenName,jdbcType=VARCHAR} and </if>
       <if test="symbol != null">symbol = #{symbol,jdbcType=VARCHAR} and </if>
-      <if test="totalSupply != null">total_supply = #{totalSupply,jdbcType=BIGINT} and </if>
+      <if test="totalSupply != null">total_supply = #{totalSupply,jdbcType=VARCHAR} and </if>
       <if test="decimals != null">decimals = #{decimals,jdbcType=BIGINT} and </if>
       <if test="holders != null">holders = #{holders,jdbcType=BIGINT} and </if>
       <if test="transfers != null">transfers = #{transfers,jdbcType=BIGINT} and </if>
@@ -48,7 +48,7 @@
     insert into bc_erc20_token 
     	(token_address, token_name, symbol, total_supply, decimals, holders,transfers)
     values 
-    	(#{tokenAddress,jdbcType=VARCHAR}, #{tokenName,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}, #{totalSupply,jdbcType=BIGINT}, #{decimals,jdbcType=BIGINT}, #{holders,jdbcType=BIGINT}, #{transfers,jdbcType=BIGINT})
+    	(#{tokenAddress,jdbcType=VARCHAR}, #{tokenName,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}, #{totalSupply,jdbcType=VARCHAR}, #{decimals,jdbcType=BIGINT}, #{holders,jdbcType=BIGINT}, #{transfers,jdbcType=BIGINT})
   </insert>
   
   <insert id="insertTokenBatch" useGeneratedKeys="false" keyProperty="tokenAddress" parameterType="java.util.List">
@@ -56,7 +56,7 @@
     	(token_address, token_name, symbol, total_supply, decimals, holders,transfers)
     values 
 	  <foreach collection="list" item="item" index="index" separator="," >  
-	      (#{item.tokenAddress,jdbcType=VARCHAR}, #{item.tokenName,jdbcType=VARCHAR}, #{item.symbol,jdbcType=VARCHAR}, #{item.totalSupply,jdbcType=BIGINT}, #{item.decimals,jdbcType=BIGINT}, #{item.holders,jdbcType=BIGINT}, #{item.transfers,jdbcType=BIGINT})
+	      (#{item.tokenAddress,jdbcType=VARCHAR}, #{item.tokenName,jdbcType=VARCHAR}, #{item.symbol,jdbcType=VARCHAR}, #{item.totalSupply,jdbcType=VARCHAR}, #{item.decimals,jdbcType=BIGINT}, #{item.holders,jdbcType=BIGINT}, #{item.transfers,jdbcType=BIGINT})
 	  </foreach>  
   </insert>
   
@@ -65,7 +65,7 @@
     <set>
       <if test="tokenName != null">token_name = #{tokenName,jdbcType=VARCHAR},</if>
       <if test="symbol != null">symbol = #{symbol,jdbcType=VARCHAR},</if>
-      <if test="totalSupply != null">total_supply = #{totalSupply,jdbcType=BIGINT},</if>
+      <if test="totalSupply != null">total_supply = #{totalSupply,jdbcType=VARCHAR},</if>
       <if test="decimals != null">decimals = #{decimals,jdbcType=BIGINT},</if>
       <if test="holders != null">holders = #{holders,jdbcType=BIGINT},</if>
       <if test="transfers != null">transfers = #{transfers,jdbcType=BIGINT},</if>

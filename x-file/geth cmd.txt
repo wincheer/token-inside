@@ -1,0 +1,5 @@
+D:\block-chain> geth --datadir data --rpcapi personal,db,eth,net,web3 --rpc --rpcaddr "127.0.0.1" --rpcport "8545"
+
+geth --rpc --rpcaddr 127.0.0.1 --rpcport 8545
+
+geth --rpc --rpcaddr "127.0.0.1" --rpcport "8545" --datadir "data" --rpcapi "personal,db,eth,net,web3"

@@ -16,7 +16,7 @@
 		<javaClientGenerator targetPackage="com.ywq.ti.dao" targetProject="ti/src/main/java" type="XMLMAPPER"/>
 			
 		<!-- 要生成的那些表(更改tableName 和domainObjectName 就可以了) -->
-		<table schema="ti" tableName="%" enableCountByExample="false"
+		<table schema="ti" tableName="foo" enableCountByExample="false"
 			enableUpdateByExample="false" enableDeleteByExample="false"
 			enableSelectByExample="false" selectByExampleQueryId="false" />
 	</context>

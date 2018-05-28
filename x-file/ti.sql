@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-05-25 17:15:26
+Date: 2018-05-28 15:58:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -21,10 +21,10 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `bc_block`;
 CREATE TABLE `bc_block` (
   `hash` varchar(100) NOT NULL,
-  `number` bigint(20) NOT NULL,
+  `number` bigint(20) unsigned NOT NULL,
   `parent_hash` varchar(100) NOT NULL,
   `coinbase` varchar(100) NOT NULL,
-  `difficulty` bigint(20) NOT NULL,
+  `difficulty` bigint(20) unsigned NOT NULL,
   `gas_limit` decimal(50,0) NOT NULL,
   `gas_used` decimal(50,0) NOT NULL,
   `timestamp` datetime NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE `bc_erc20_token` (
   `token_address` varchar(100) NOT NULL,
   `token_name` varchar(50) NOT NULL,
   `symbol` varchar(50) NOT NULL,
-  `total_supply` decimal(50,0) NOT NULL,
+  `total_supply` varchar(100) NOT NULL,
   `decimals` bigint(20) NOT NULL DEFAULT '0',
   `holders` bigint(20) NOT NULL DEFAULT '0' COMMENT '账户数量',
   `transfers` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易次数',
@@ -80,7 +80,7 @@ CREATE TABLE `bc_erc20_transaction` (
   `tx_hash` varchar(100) NOT NULL,
   `token_address` varchar(100) NOT NULL,
   `block_hash` varchar(100) NOT NULL,
-  `block_number` bigint(20) NOT NULL,
+  `block_number` bigint(20) unsigned NOT NULL,
   `gas` decimal(50,0) NOT NULL,
   `gas_price` decimal(50,0) NOT NULL,
   `send_address` varchar(100) NOT NULL,

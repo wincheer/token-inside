@@ -5,20 +5,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ywq.ti.dao.BcCurrentBlockMapper;
-import com.ywq.ti.entity.BcCurrentBlock;
+import com.ywq.ti.dao.BcBlockMapper;
 
 @RestController
 public class BlockAction {
 	
 	@Autowired
-	private BcCurrentBlockMapper dao;
+	private BcBlockMapper dao;
 	
-	@RequestMapping(value = "/currentBlock", method = RequestMethod.GET)
-	public BcCurrentBlock currentBlock() {
-
-		BcCurrentBlock b = dao.selectCurrentBlock("ETH");
-		return b;
+	@RequestMapping(value = "/addFoo", method = RequestMethod.GET)
+	public void addFoo() {
+		dao.toString();
 	}
 
 }

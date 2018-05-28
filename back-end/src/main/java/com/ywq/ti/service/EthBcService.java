@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,8 @@ import com.ywq.ti.entity.BcTransaction;
 @Service
 @Transactional
 public class EthBcService {
+	
+	private static final Logger log = LoggerFactory.getLogger(EthBcService.class);
 
 	@Autowired
 	private BcCurrentBlockMapper currentBlockDao;
@@ -59,8 +63,6 @@ public class EthBcService {
 	 */
 	public void handleBlock(Web3j web3j,Block currentBlock) throws IOException {
 		// TODO 发送监听事件
-		Long t0 = System.currentTimeMillis();
-		
 		BcBlock block = buildBlock(currentBlock);
 		List<BcTransaction> txList = buildTxList(currentBlock.getTransactions());
 		List<BcErc20Token> tokenList = new ArrayList<BcErc20Token>();
@@ -79,14 +81,14 @@ public class EthBcService {
 					BcErc20Token bcToken = buildToken(token); 
 					tokenList.add(bcToken);
 				}
+				log.info("交易类型：创建合约，合约地址  - " + txr.getContractAddress());
 			} else {
 				DefaultBlockParameterNumber blockParam = new DefaultBlockParameterNumber(tx.getBlockNumber());
 				String code = web3j.ethGetCode(tx.getReceiveAddress(), blockParam).send().getResult();
-				//TODO 检查一下code到底是啥
-				System.out.println("=====================   CODE is " + code + "   =====================");
 				if(code.trim().equals("0x")){
 					//以太币转账
-					tx.setTxType(TxType.ETHER_TRANSFER);					
+					tx.setTxType(TxType.ETHER_TRANSFER);	
+					log.info("交易类型：以太币交易 ");
 				} else{
 					//智能合约交易->检索token表->存在的话解析交易数据
 					//合约交易的时候，to是合约地址
@@ -96,6 +98,7 @@ public class EthBcService {
 						BcErc20Transaction tokenTx = buildTokenTx(tx); 
 						tokenTxList.add(tokenTx);
 					}
+					log.info("交易类型：智能合约调用");
 				}
 			}
 		}
@@ -112,9 +115,6 @@ public class EthBcService {
 		_currentBlock.setBcType(TxType.ETH);
 		_currentBlock.setBlockNumber(currentBlock.getNumber().longValue()+1);
 		currentBlockDao.updateCurrentBlock(_currentBlock);
-		
-		Long t1 = System.currentTimeMillis();
-		System.out.println("DB 处理区块: " + currentBlock.getNumber() +"耗时(毫秒) = " + (t1-t0));
 	}
 	
 
@@ -207,7 +207,7 @@ public class EthBcService {
 		erc20Token.setTokenAddress(token.getTokenAddress());
 		erc20Token.setTokenName(token.getTokenName());
 		erc20Token.setSymbol(token.getSymbol());
-		erc20Token.setTotalSupply(token.getTotalSupply());
+		erc20Token.setTotalSupply(token.getTotalSupply().toString());
 		erc20Token.setDecimals(token.getDecimals().longValue());
 		erc20Token.setHolders(0L);
 		erc20Token.setTransfers(0L);
