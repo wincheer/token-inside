@@ -37,6 +37,7 @@ public class EtherumParser {
 		
 		Web3jConfig web3jConfig = new Web3jConfig();
 		Web3j web3j = Web3j.build(web3jConfig.buildService(WEB3_CLIENT_URL));
+		//Web3j web3j = Web3j.build(new WindowsIpcService("\\\\.\\pipe\\geth.ipc")); //IPC
 		 
 		Long maxBlockBumber = (web3j.ethBlockNumber().send().getBlockNumber()).longValue();//最新的区块高度
 		log.info("最新区块高度：" + maxBlockBumber);
