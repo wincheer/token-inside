@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @ServletComponentScan
 @MapperScan(basePackages = "com.ywq.ti.dao")
 @SpringBootApplication(scanBasePackages = "com.ywq.ti")
-@EnableScheduling 
+@EnableScheduling
 public class TokenInsideApplication {
 
 	public static void main(String[] args) {

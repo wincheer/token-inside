@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-05-28 15:58:54
+Date: 2018-05-31 17:09:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -35,10 +35,6 @@ CREATE TABLE `bc_block` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of bc_block
--- ----------------------------
-
--- ----------------------------
 -- Table structure for bc_current_block
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_current_block`;
@@ -47,11 +43,6 @@ CREATE TABLE `bc_current_block` (
   `block_number` bigint(20) NOT NULL DEFAULT '0' COMMENT '记录当前已处理完成的block，仅仅更新，仅一条记录',
   PRIMARY KEY (`bc_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of bc_current_block
--- ----------------------------
-INSERT INTO `bc_current_block` VALUES ('ETH', '0');
 
 -- ----------------------------
 -- Table structure for bc_erc20_token
@@ -67,10 +58,6 @@ CREATE TABLE `bc_erc20_token` (
   `transfers` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易次数',
   PRIMARY KEY (`token_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of bc_erc20_token
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_erc20_transaction
@@ -98,10 +85,6 @@ CREATE TABLE `bc_erc20_transaction` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of bc_erc20_transaction
--- ----------------------------
-
--- ----------------------------
 -- Table structure for bc_transaction
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_transaction`;
@@ -114,7 +97,7 @@ CREATE TABLE `bc_transaction` (
   `send_address` varchar(100) NOT NULL,
   `receive_address` varchar(100) NOT NULL DEFAULT '',
   `value` decimal(50,0) NOT NULL DEFAULT '0',
-  `data` text NOT NULL,
+  `data` mediumtext NOT NULL,
   `timestamp` datetime NOT NULL,
   `tx_type` varchar(20) NOT NULL DEFAULT '1' COMMENT '交易类型：1、以太币交易；2、合约调用；3、创建合约；',
   PRIMARY KEY (`hash`),
@@ -125,7 +108,3 @@ CREATE TABLE `bc_transaction` (
   KEY `receive_address` (`receive_address`),
   KEY `tx_type` (`tx_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of bc_transaction
--- ----------------------------
