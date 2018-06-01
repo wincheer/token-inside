@@ -1,0 +1,135 @@
+<script>
+import wepy from 'wepy';
+import Promise from 'promise-polyfill';
+import 'wepy-async-function';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/home',
+      'pages/project',
+      'pages/task',
+      'pages/me'
+    ],
+    window: {
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#fff',
+      navigationBarTitleText: 'Token Inside',
+      navigationBarTextStyle: 'black'
+    },
+    tabBar: {
+      selectedColor: '#7EC0EE',
+      borderStyle: 'white',
+      list: [
+        {
+          text: '首页',
+          pagePath: 'pages/home',
+          iconPath: './assets/images/home.png',
+          selectedIconPath: './assets/images/home-s.png'
+        },
+        {
+          text: '项目',
+          pagePath: 'pages/project',
+          iconPath: './assets/images/project.png',
+          selectedIconPath: './assets/images/project-s.png'
+        },
+        {
+          text: '任务',
+          pagePath: 'pages/task',
+          iconPath: './assets/images/task.png',
+          selectedIconPath: './assets/images/task-s.png'
+        },
+        {
+          text: '我的',
+          pagePath: 'pages/me',
+          iconPath: './assets/images/me.png',
+          selectedIconPath: './assets/images/me-s.png'
+        }
+      ]
+    }
+  };
+
+  globalData = {
+    userInfo: null, //微信用户信息
+    loginUser: null, //登录用户
+    myRoles: [] //用户角色
+  };
+
+  constructor() {
+    super();
+    this.use('requestfix');
+    this.use('promisify');
+  }
+
+  //APP生命周期
+  onLaunch() {
+    this.getUserInfo();
+  }
+  onShow() {
+    // Do something when show.
+  }
+  onHide() {
+    // Do something when hide.
+  }
+
+  getUserInfo() {
+    const _this = this;
+    if (!this.globalData.userInfo) {
+      wx.getUserInfo({
+        success(res) {
+          _this.globalData.userInfo = res.userInfo;
+        }
+      });
+    }
+  }
+}
+</script>
+
+<style lang="less">
+@import './assets/style/weui.wxss';
+.container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.page {
+  background-color: #f8f8f8;
+  font-size: 16px;
+  font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
+}
+.page__hd {
+  padding: 40px;
+}
+.page__bd {
+  padding-bottom: 40px;
+}
+.page__bd_spacing {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.page__ft {
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.page__title {
+  text-align: left;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.page__desc {
+  margin-top: 5px;
+  color: #888888;
+  text-align: left;
+  font-size: 14px;
+}
+</style>

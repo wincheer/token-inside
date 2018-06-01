@@ -85,7 +85,7 @@ public class EthBcService {
 			} else {
 				DefaultBlockParameterNumber blockParam = new DefaultBlockParameterNumber(tx.getBlockNumber());
 				String code = web3j.ethGetCode(tx.getReceiveAddress(), blockParam).send().getResult();
-				if(code.trim().equals("0x")){
+				if(code==null || code.trim().equals("0x")){
 					//以太币转账
 					tx.setTxType(TxType.ETHER_TRANSFER);	
 					log.info("交易类型：以太币交易 ");

@@ -1,0 +1,97 @@
+<template>
+  <view class="page">
+    <view class="page__hd">
+      <view class="page__title">{{foo}}</view>
+      <view class="page__desc">WeUI 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。</view>
+    </view>
+    <view class="page__bd">
+      <view class="weui-btn-area">
+        <button class="weui-btn" type="default" @tap="openConfirm">确认对话框</button>
+        <button class="weui-btn" type="default" @tap="openCam">选取文件</button>
+      </view>
+      <view class="weui-cells__title">项目列表</view>
+      <view class="weui-cells weui-cells_after-title">
+        
+        <view class="weui-cells weui-cells_after-title">
+          <repeat for="{{projectList}}" key="index" index="index" item="item">
+            <view class="weui-cell">
+                <view class="weui-cell__bd">{{item.projectName}}</view>
+                <!-- <view class="weui-cell__ft">{{item.projectName}}</view> -->
+                <icon type="success"/>
+            </view>
+          </repeat>
+        </view>
+        
+        <!-- <repeat for="{{projectList}}" key="index" index="index" item="item">
+            <view class="weui-cell__ft">{{item.projectName}}</view>
+        </repeat> -->
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import { SELECT_PROJECT_LIST } from '@/config/api.js';
+export default class Home extends wepy.page {
+  config = {
+    navigationBarTitleText: '首页'
+  };
+
+  data = {
+    foo: 'WeUI',
+    projectList: []
+  };
+
+  methods = {
+    openConfirm() {
+      wx.showModal({
+        title: '弹窗标题',
+        content:
+          '弹窗内容，告知当前状态、信息和解决方法，描述文字尽量控制在三行内',
+        success: function(res) {
+          console.log(res);
+          if (res.confirm) {
+            console.log('用户点击主操作');
+          } else {
+            console.log('用户点击辅助操作');
+          }
+        }
+      });
+    },
+    openCam() {
+      wx.chooseImage({
+        count: 1, // 默认9
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function(res) {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          var tempFilePaths = res.tempFilePaths;
+        }
+      });
+    }
+  };
+
+  queryFromServer() {
+    var _this = this;
+    let params = {};
+    SELECT_PROJECT_LIST(params).then(res => {
+      _this.projectList = res;
+      _this.$apply();
+    });
+  }
+
+  onLoad() {
+    //检查用户状态
+    //var loginUser = wx.getStorageSync('loginUser');
+    //if (!loginUser) loginUser = this.$parent.globalData.loginUser;
+
+    //if (loginUser) this.queryFromServer();
+    //else wx.redirectTo({ url: '/pages/login' }); //重定向到登录页面
+  }
+}
+</script>
+
+<style lang="less">
+
+</style>
