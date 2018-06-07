@@ -68,9 +68,10 @@ export default class extends wepy.app {
   initSocket(){
     var socketOpen = false  //连接状态
     var socketMsgQueue = [] //消息队列
+    var socketTask
     var _this = this
     //建立连接
-    var socketTask = wx.connectSocket({url:'ws://localhost:8080/socket?user_id=18602010502'})
+    socketTask = wx.connectSocket({url:'ws://localhost:8080/socket?user_id=18602010502'})
     //连接成功 --TODO 改为操作SocketTask
     socketTask.onOpen(function(res) {
       console.log('WebSocket连接已打开！')
@@ -96,7 +97,7 @@ export default class extends wepy.app {
 
   sendSocketMessage(msg) {
     if (socketOpen) {
-      wx.sendSocketMessage({
+      socketTask.send({
         data:msg
       })
     } else {
