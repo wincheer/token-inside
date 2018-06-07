@@ -63,10 +63,49 @@ export default class extends wepy.app {
 
   //APP生命周期
   onLaunch() {
-    this.getUserInfo();
+    // this.getUserInfo();
+  }
+  initSocket(){
+    var socketOpen = false  //连接状态
+    var socketMsgQueue = [] //消息队列
+    var _this = this
+    //建立连接
+    var socketTask = wx.connectSocket({url:'ws://localhost:8080/socket?user_id=18602010502'})
+    //连接成功 --TODO 改为操作SocketTask
+    socketTask.onOpen(function(res) {
+      console.log('WebSocket连接已打开！')
+      socketOpen = true
+      for (var i = 0; i < socketMsgQueue.length; i++){
+        _this.sendSocketMessage(socketMsgQueue[i])
+      }
+      socketMsgQueue = []
+    })
+    //连接失败
+    socketTask.onError(function(res) {
+      socketOpen = true
+      console.log('websocket连接失败！');
+    })
+    //接收到服务器端消息
+    socketTask.onMessage(function (res) {
+      console.log('收到服务器内容：' + JSON.stringify(res))
+    })
+    socketTask.onClose(function(res) {  
+      console.log("WebSocket连接已关闭")  
+    })  
+  }
+
+  sendSocketMessage(msg) {
+    if (socketOpen) {
+      wx.sendSocketMessage({
+        data:msg
+      })
+    } else {
+      socketMsgQueue.push(msg)
+    }
   }
   onShow() {
     // Do something when show.
+    this.initSocket();
   }
   onHide() {
     // Do something when hide.

@@ -35,7 +35,8 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
 		logger.debug("关闭websocket连接");
-		String userId = (String) session.getAttributes().get(USER_ID);
+		//String userId = (String) session.getAttributes().get(USER_ID);
+		String userId = session.getUri().getQuery().substring(8);
 		System.out.println("用户" + userId + "已退出！");
 		sessions.remove(userId);
 		System.out.println("剩余在线用户" + sessions.size());
