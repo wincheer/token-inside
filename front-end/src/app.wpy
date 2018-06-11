@@ -3,6 +3,8 @@ import wepy from 'wepy';
 import Promise from 'promise-polyfill';
 import 'wepy-async-function';
 
+let socketOpen = false  //连接状态
+let socketMsgQueue = [] //消息队列
 export default class extends wepy.app {
   config = {
     pages: [
@@ -52,7 +54,8 @@ export default class extends wepy.app {
   globalData = {
     userInfo: null, //微信用户信息
     loginUser: null, //登录用户
-    myRoles: [] //用户角色
+    socketTask: {},
+    callback: function () {}
   };
 
   constructor() {
@@ -66,14 +69,12 @@ export default class extends wepy.app {
     // this.getUserInfo();
   }
   initSocket(){
-    var socketOpen = false  //连接状态
-    var socketMsgQueue = [] //消息队列
-    var socketTask
+    //var socketTask
     var _this = this
     //建立连接
-    socketTask = wx.connectSocket({url:'ws://localhost:8080/socket?user_id=18602010502'})
+    _this.globalData.socketTask = wx.connectSocket({url:'ws://localhost:8080/socket?user_id=18602010502'})
     //连接成功 --TODO 改为操作SocketTask
-    socketTask.onOpen(function(res) {
+    _this.globalData.socketTask.onOpen(function(res) {
       console.log('WebSocket连接已打开！')
       socketOpen = true
       for (var i = 0; i < socketMsgQueue.length; i++){
@@ -82,22 +83,25 @@ export default class extends wepy.app {
       socketMsgQueue = []
     })
     //连接失败
-    socketTask.onError(function(res) {
-      socketOpen = true
+    _this.globalData.socketTask.onError(function(res) {
+      socketOpen = false
       console.log('websocket连接失败！');
     })
     //接收到服务器端消息
-    socketTask.onMessage(function (res) {
+    _this.globalData.socketTask.onMessage(function (res) {
       console.log('收到服务器内容：' + JSON.stringify(res))
+      //_this.globalData.callback(res)
     })
-    socketTask.onClose(function(res) {  
+    _this.globalData.socketTask.onClose(function(res) {  
+      socketOpen = false
       console.log("WebSocket连接已关闭")  
+      _this.initSocket()
     })  
   }
 
   sendSocketMessage(msg) {
     if (socketOpen) {
-      socketTask.send({
+      this.globalData.socketTask.send({
         data:msg
       })
     } else {
@@ -106,7 +110,11 @@ export default class extends wepy.app {
   }
   onShow() {
     // Do something when show.
-    this.initSocket();
+    //this.initSocket();
+    if (!socketOpen) {
+      console.log('开始尝试连接WebSocket！')
+      this.initSocket()
+    }
   }
   onHide() {
     // Do something when hide.
