@@ -89,6 +89,14 @@ export default class Home extends wepy.page {
     //if (loginUser) this.queryFromServer();
     //else wx.redirectTo({ url: '/pages/login' }); //重定向到登录页面
   }
+  onShow() {
+    // Do something when page show.
+    var _this = this
+    _this.$parent.globalData.callback = function (res){
+      //收到服务器端推送的消息...
+      console.log(JSON.stringify(res))
+    }
+  };
 }
 </script>
 

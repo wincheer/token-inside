@@ -30,13 +30,13 @@ export default class extends wepy.app {
           selectedIconPath: './assets/images/home-s.png'
         },
         {
-          text: '项目',
+          text: '通证',
           pagePath: 'pages/project',
           iconPath: './assets/images/project.png',
           selectedIconPath: './assets/images/project-s.png'
         },
         {
-          text: '任务',
+          text: '钱包',
           pagePath: 'pages/task',
           iconPath: './assets/images/task.png',
           selectedIconPath: './assets/images/task-s.png'
@@ -54,8 +54,8 @@ export default class extends wepy.app {
   globalData = {
     userInfo: null, //微信用户信息
     loginUser: null, //登录用户
-    socketTask: {},
-    callback: function () {}
+    socketTask: {}, //全局socket连接对象
+    callback: function () {} //全局接收到服务器消息事件
   };
 
   constructor() {
@@ -73,7 +73,7 @@ export default class extends wepy.app {
     var _this = this
     //建立连接
     _this.globalData.socketTask = wx.connectSocket({url:'ws://localhost:8080/socket?user_id=18602010502'})
-    //连接成功 --TODO 改为操作SocketTask
+    //连接成功 
     _this.globalData.socketTask.onOpen(function(res) {
       console.log('WebSocket连接已打开！')
       socketOpen = true
@@ -90,7 +90,7 @@ export default class extends wepy.app {
     //接收到服务器端消息
     _this.globalData.socketTask.onMessage(function (res) {
       console.log('收到服务器内容：' + JSON.stringify(res))
-      //_this.globalData.callback(res)
+      _this.globalData.callback(res)
     })
     _this.globalData.socketTask.onClose(function(res) {  
       socketOpen = false
