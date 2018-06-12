@@ -7,7 +7,9 @@
     <view class="page__bd">
       <view class="weui-btn-area">
         <button class="weui-btn" type="default" @tap="openConfirm">确认对话框</button>
-        <button class="weui-btn" type="default" @tap="openCam">选取文件</button>
+        <button class="weui-btn" type="default" @tap="openCam">用户登录</button>
+        <button class="weui-btn" wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">获取用户信息</button>
+        <button class="weui-btn" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">获取微信绑定电话</button>
       </view>
       <view class="weui-cells__title">项目列表</view>
       <view class="weui-cells weui-cells_after-title">
@@ -40,10 +42,19 @@ export default class Home extends wepy.page {
 
   data = {
     foo: 'WeUI',
-    projectList: []
+    projectList: [],
+    canIUse: wx.canIUse('button.open-type.getUserInfo')
   };
 
   methods = {
+    bindGetUserInfo(e) {
+      console.log(e.detail.userInfo)
+    },
+    getPhoneNumber(e) { 
+        console.log(e.detail.errMsg) 
+        console.log(e.detail.iv) 
+        console.log(e.detail.encryptedData) 
+    } ,
     openConfirm() {
       wx.showModal({
         title: '弹窗标题',
@@ -60,17 +71,29 @@ export default class Home extends wepy.page {
       });
     },
     openCam() {
-      wx.chooseImage({
-        count: 1, // 默认9
-        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+      // wx.chooseImage({
+      //   count: 1, // 默认9
+      //   sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+      //   sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+      //   success: function(res) {
+      //     // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+      //     var tempFilePaths = res.tempFilePaths;
+      //   }
+      // });
+      wx.login({
         success: function(res) {
-          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-          var tempFilePaths = res.tempFilePaths;
+          if (res.code) {
+            //发起网络请求
+            console.log('登录凭证：' + res.code)
+          } else {
+            console.log('登录失败！' + res.errMsg)
+          }
         }
-      });
+    });
     }
   };
+
+  
 
   queryFromServer() {
     var _this = this;
