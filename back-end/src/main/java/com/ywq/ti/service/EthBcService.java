@@ -20,7 +20,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import com.ywq.ti.common.ERC20Token;
 import com.ywq.ti.common.ERC20TokenData;
 import com.ywq.ti.common.TxType;
-import com.ywq.ti.common.Utils;
+import com.ywq.ti.common.EthUtils;
 import com.ywq.ti.dao.BcBlockMapper;
 import com.ywq.ti.dao.BcCurrentBlockMapper;
 import com.ywq.ti.dao.BcErc20TokenMapper;
@@ -75,7 +75,7 @@ public class EthBcService {
 				tx.setTxType(TxType.CREATE_CONTRACT);
 				tx.setReceiveAddress("");
 				TransactionReceipt txr = web3j.ethGetTransactionReceipt(tx.getHash()).send().getResult();
-				ERC20Token token = Utils.getTokenInfo(web3j, txr.getContractAddress());
+				ERC20Token token = EthUtils.getTokenInfo(web3j, txr.getContractAddress());
 				if (token.isValid()) {
 					// 添加Token记录
 					BcErc20Token bcToken = buildToken(token); 
@@ -177,7 +177,7 @@ public class EthBcService {
 	 */
 	private BcErc20Transaction buildTokenTx(BcTransaction tx) {
 
-		ERC20TokenData txData = Utils.DecodeErc20Data(tx.getData());
+		ERC20TokenData txData = EthUtils.DecodeErc20Data(tx.getData());
 		
 		BcErc20Transaction erc20Tx = new BcErc20Transaction();
 		

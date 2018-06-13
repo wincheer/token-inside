@@ -48,13 +48,18 @@ export default class Home extends wepy.page {
 
   methods = {
     bindGetUserInfo(e) {
-      console.log(e.detail.userInfo)
+      //console.log(e.detail.userInfo)
+      wx.getUserInfo({
+        success: function(res) {
+          console.log(JSON.stringify(res));
+        }
+      });
     },
-    getPhoneNumber(e) { 
-        console.log(e.detail.errMsg) 
-        console.log(e.detail.iv) 
-        console.log(e.detail.encryptedData) 
-    } ,
+    getPhoneNumber(e) {
+      console.log(e.detail.errMsg);
+      console.log(e.detail.iv);
+      console.log(e.detail.encryptedData);
+    },
     openConfirm() {
       wx.showModal({
         title: '弹窗标题',
@@ -84,16 +89,14 @@ export default class Home extends wepy.page {
         success: function(res) {
           if (res.code) {
             //发起网络请求
-            console.log('登录凭证：' + res.code)
+            console.log('登录凭证：' + res.code);
           } else {
-            console.log('登录失败！' + res.errMsg)
+            console.log('登录失败！' + res.errMsg);
           }
         }
-    });
+      });
     }
   };
-
-  
 
   queryFromServer() {
     var _this = this;
@@ -108,21 +111,19 @@ export default class Home extends wepy.page {
     //检查用户状态
     //var loginUser = wx.getStorageSync('loginUser');
     //if (!loginUser) loginUser = this.$parent.globalData.loginUser;
-
     //if (loginUser) this.queryFromServer();
     //else wx.redirectTo({ url: '/pages/login' }); //重定向到登录页面
   }
   onShow() {
     // Do something when page show.
-    var _this = this
-    _this.$parent.globalData.callback = function (res){
+    var _this = this;
+    _this.$parent.globalData.callback = function(res) {
       //收到服务器端推送的消息...
-      console.log(JSON.stringify(res))
-    }
-  };
+      console.log(JSON.stringify(res));
+    };
+  }
 }
 </script>
 
 <style lang="less">
-
 </style>

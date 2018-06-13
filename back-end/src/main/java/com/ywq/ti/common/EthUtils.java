@@ -15,9 +15,9 @@ import org.web3j.tx.exceptions.ContractCallException;
  * <b>版本历史 :</b> <br/>
  * 杨文清 | 2018年5月22日 下午6:23:34 | 创建
  */
-public class Utils {
+public class EthUtils {
 
-	private static Logger log = Logger.getLogger(Utils.class);
+	private static Logger log = Logger.getLogger(EthUtils.class);
 
 	/**
 	 * 解析区块链交易（ERC20交易）的交易信息
