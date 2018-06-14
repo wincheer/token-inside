@@ -1,0 +1,1 @@
+1、偶尔有神奇的token名字是图形符号，导致插入的时候出现问题。 ==》 character_set_server=utf8mb4 重启mysqld
