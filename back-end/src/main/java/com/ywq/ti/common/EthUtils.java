@@ -56,9 +56,9 @@ public class EthUtils {
 			tokenName = token.name().send();
 			symbol = token.symbol().send();
 		} catch (ContractCallException cce) {
-			log.info("当前地址不是有效的 ERC20 Token 合约：" + cce.getMessage());
+			log.warn("当前地址不是有效的 ERC20 Token 合约：" + cce.getMessage()  + " - " +  tokenAddress);
 		} catch (Exception e) {
-			log.error("载入合约异常：" + e.getMessage());
+			log.error("载入合约异常：" + e.getMessage() + " - " + tokenAddress);
 		}
 
 		erc20Token.setTokenAddress(tokenAddress);
