@@ -27,9 +27,9 @@ public class EthUtils {
 	public static ERC20TokenData DecodeErc20Data(String data) {
 
 		ERC20TokenData erc20Data = new ERC20TokenData();
-		//ERC20标准的transfer函数的指令hash前8字节为(0x)a9059cbb
-		erc20Data.setToAddress(data.substring(10, 74));
-		erc20Data.setValue(new BigInteger(data.substring(74)));
+		//ERC20标准的transfer函数的指令hash前8字节为(0x)a9059cbb，ERC223为0xc0ee0b8a
+		erc20Data.setToAddress("0x"+data.substring(10, 74).replaceAll("^0+(?!$)", ""));
+		erc20Data.setValue(new BigInteger(data.substring(74).replaceAll("^0+(?!$)", ""),16));
 
 		return erc20Data;
 	}
@@ -51,10 +51,10 @@ public class EthUtils {
 		BigInteger totalSupply = BigInteger.valueOf(0);
 		BigInteger decimals = BigInteger.valueOf(18);
 		try {
-			totalSupply = token.totalSupply().send();
+			totalSupply = token.totalSupply().send(); //一定会有值，否则无效代币
 			decimals = token.decimals().send();
-			tokenName = token.name().send();
 			symbol = token.symbol().send();
+			tokenName = token.name().send();
 		} catch (ContractCallException cce) {
 			log.warn("当前地址不是有效的 ERC20 Token 合约：" + cce.getMessage()  + " - " +  tokenAddress);
 		} catch (Exception e) {

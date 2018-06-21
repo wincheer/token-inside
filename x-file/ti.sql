@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-06-19 15:43:11
+Date: 2018-06-21 14:45:29
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -97,7 +97,7 @@ CREATE TABLE `bc_block` (
   KEY `number` (`number`),
   KEY `coinbase` (`coinbase`),
   KEY `hash` (`hash`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=201107 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=203683 DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (id)
 (PARTITION p0 VALUES LESS THAN (2000000) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (4000000) ENGINE = InnoDB,
@@ -126,13 +126,20 @@ CREATE TABLE `bc_current_block` (
 DROP TABLE IF EXISTS `bc_erc20_token`;
 CREATE TABLE `bc_erc20_token` (
   `token_address` varchar(100) NOT NULL,
-  `token_name` mediumtext NOT NULL,
-  `symbol` varchar(100) DEFAULT NULL,
+  `token_name` mediumtext CHARACTER SET utf8mb4 NOT NULL,
+  `block_hash` varchar(100) NOT NULL,
+  `block_number` bigint(20) unsigned NOT NULL,
+  `tx_hash` varchar(100) NOT NULL,
+  `symbol` varchar(100) CHARACTER SET utf8mb4 DEFAULT NULL,
   `total_supply` varchar(100) NOT NULL,
   `decimals` bigint(20) NOT NULL DEFAULT '0',
   `holders` bigint(20) NOT NULL DEFAULT '0' COMMENT '账户数量',
   `transfers` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易次数',
-  PRIMARY KEY (`token_address`)
+  PRIMARY KEY (`token_address`),
+  KEY `token_address` (`token_address`),
+  KEY `tx_hash` (`tx_hash`),
+  KEY `block_hash` (`block_hash`),
+  KEY `symbol` (`symbol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -140,7 +147,7 @@ CREATE TABLE `bc_erc20_token` (
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_erc20_transaction`;
 CREATE TABLE `bc_erc20_transaction` (
-  `id` bigint(20) unsigned NOT NULL,
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `tx_hash` varchar(100) NOT NULL,
   `token_address` varchar(100) NOT NULL,
   `block_hash` varchar(100) NOT NULL,
@@ -159,7 +166,7 @@ CREATE TABLE `bc_erc20_transaction` (
   KEY `send_address` (`send_address`),
   KEY `receive_address` (`receive_address`),
   KEY `timestamp` (`timestamp`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (id)
 (PARTITION p0 VALUES LESS THAN (2000000) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (4000000) ENGINE = InnoDB,
@@ -287,7 +294,7 @@ CREATE TABLE `bc_transaction` (
   KEY `send_address` (`send_address`),
   KEY `receive_address` (`receive_address`),
   KEY `tx_type` (`tx_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=123325 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=136908 DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (id)
 (PARTITION p0 VALUES LESS THAN (2000000) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (4000000) ENGINE = InnoDB,

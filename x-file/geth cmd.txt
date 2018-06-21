@@ -5,3 +5,10 @@ geth --rpc --rpcaddr 127.0.0.1 --rpcport 8545
 geth --rpc --rpcaddr "127.0.0.1" --rpcport "8545" --datadir "data" --rpcapi "personal,db,eth,net,web3"
 
 ipc:\\.\pipe\geth.ipc
+
+#是否同步区块
+eth.syncing
+#链接点数组
+admin.peers
+#当前区块
+eth.blockNumber

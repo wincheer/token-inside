@@ -58,8 +58,8 @@ public class ERC20Token {
 	}
 
 	public boolean isValid() {
-		//if (tokenName.trim().equals(TxType.INVALID_ERC20TOKEN))
-		if(totalSupply.equals(BigInteger.valueOf(0)))
+		if (tokenName.trim().equals(TxType.INVALID_ERC20TOKEN) || totalSupply.equals(BigInteger.valueOf(0)))
+		//if(totalSupply.equals(BigInteger.valueOf(0)))
 			return false;
 		else
 			return true;

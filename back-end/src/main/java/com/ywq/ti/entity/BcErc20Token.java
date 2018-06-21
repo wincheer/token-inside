@@ -9,6 +9,9 @@ public class BcErc20Token {
     private long decimals; //小数点
     private long holders; //持有人总数量
     private long transfers; //交易总数量
+    private String txHash; //所属交易
+    private String blockHash; //所属区块
+    private long blockNumber; 
     
 	public String getTokenAddress() {
 		return tokenAddress;
@@ -52,6 +55,23 @@ public class BcErc20Token {
 	public void setTransfers(long transfers) {
 		this.transfers = transfers;
 	}
-
+	public String getTxHash() {
+		return txHash;
+	}
+	public void setTxHash(String txHash) {
+		this.txHash = txHash;
+	}
+	public String getBlockHash() {
+		return blockHash;
+	}
+	public void setBlockHash(String blockHash) {
+		this.blockHash = blockHash;
+	}
+	public long getBlockNumber() {
+		return blockNumber;
+	}
+	public void setBlockNumber(long blockNumber) {
+		this.blockNumber = blockNumber;
+	}
 
 }
