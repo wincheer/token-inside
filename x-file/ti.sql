@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-06-21 14:45:29
+Date: 2018-06-22 17:40:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,6 +29,10 @@ CREATE TABLE `app_bonus` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of app_bonus
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for app_message
 -- ----------------------------
 DROP TABLE IF EXISTS `app_message`;
@@ -42,6 +46,10 @@ CREATE TABLE `app_message` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of app_message
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for app_tag
 -- ----------------------------
 DROP TABLE IF EXISTS `app_tag`;
@@ -52,6 +60,10 @@ CREATE TABLE `app_tag` (
   `tag` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of app_tag
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for app_user
@@ -68,6 +80,10 @@ CREATE TABLE `app_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of app_user
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for app_watch
 -- ----------------------------
 DROP TABLE IF EXISTS `app_watch`;
@@ -78,6 +94,10 @@ CREATE TABLE `app_watch` (
   `topic` varchar(50) DEFAULT 'token' COMMENT '订阅钱包wallet或者Token',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of app_watch
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_block
@@ -97,7 +117,7 @@ CREATE TABLE `bc_block` (
   KEY `number` (`number`),
   KEY `coinbase` (`coinbase`),
   KEY `hash` (`hash`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=203683 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (id)
 (PARTITION p0 VALUES LESS THAN (2000000) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (4000000) ENGINE = InnoDB,
@@ -111,6 +131,10 @@ CREATE TABLE `bc_block` (
  PARTITION p9 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
+-- Records of bc_block
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for bc_current_block
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_current_block`;
@@ -119,6 +143,11 @@ CREATE TABLE `bc_current_block` (
   `block_number` bigint(20) NOT NULL DEFAULT '0' COMMENT '记录当前已处理完成的block，仅仅更新，仅一条记录',
   PRIMARY KEY (`bc_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of bc_current_block
+-- ----------------------------
+INSERT INTO `bc_current_block` VALUES ('ETH', '0');
 
 -- ----------------------------
 -- Table structure for bc_erc20_token
@@ -141,6 +170,10 @@ CREATE TABLE `bc_erc20_token` (
   KEY `block_hash` (`block_hash`),
   KEY `symbol` (`symbol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of bc_erc20_token
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_erc20_transaction
@@ -166,7 +199,7 @@ CREATE TABLE `bc_erc20_transaction` (
   KEY `send_address` (`send_address`),
   KEY `receive_address` (`receive_address`),
   KEY `timestamp` (`timestamp`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (id)
 (PARTITION p0 VALUES LESS THAN (2000000) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (4000000) ENGINE = InnoDB,
@@ -271,6 +304,10 @@ CREATE TABLE `bc_erc20_transaction` (
  PARTITION p100 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
+-- Records of bc_erc20_transaction
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for bc_transaction
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_transaction`;
@@ -294,7 +331,7 @@ CREATE TABLE `bc_transaction` (
   KEY `send_address` (`send_address`),
   KEY `receive_address` (`receive_address`),
   KEY `tx_type` (`tx_type`)
-) ENGINE=InnoDB AUTO_INCREMENT=136908 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
 /*!50100 PARTITION BY RANGE (id)
 (PARTITION p0 VALUES LESS THAN (2000000) ENGINE = InnoDB,
  PARTITION p1 VALUES LESS THAN (4000000) ENGINE = InnoDB,
@@ -397,3 +434,7 @@ CREATE TABLE `bc_transaction` (
  PARTITION p98 VALUES LESS THAN (198000000) ENGINE = InnoDB,
  PARTITION p99 VALUES LESS THAN (200000000) ENGINE = InnoDB,
  PARTITION p100 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
+
+-- ----------------------------
+-- Records of bc_transaction
+-- ----------------------------
