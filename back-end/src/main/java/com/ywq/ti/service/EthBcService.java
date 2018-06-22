@@ -91,15 +91,22 @@ public class EthBcService {
 					tx.setTxType(TxType.ETHER_TRANSFER);
 					log.info("交易类型：以太币交易 ");
 				} else {
-					// 智能合约交易->检索token表->存在的话解析交易数据
-					// 合约交易的时候，to是合约地址
+					// 智能合约交易->检索token表->存在的话解析交易数据 。fix:插入的顺序不可预测，有可能token不在表中
+					// 合约交易的时候，to是合约地
 					tx.setTxType(TxType.EXE_CONTRACT);
 					if (tx.getData().startsWith("0xa9059cbb") && tx.getData().trim().length() == 138) {
-						BcErc20Token _token = tokenDao.selectToken(tx.getReceiveAddress());
-						if (_token != null) {
-							BcErc20Transaction tokenTx = buildTokenTx(tx);
-							tokenTxList.add(tokenTx);
-							log.info("交易类型：Token交易 - " + _token.getTokenAddress());
+						log.info("交易类型：Token交易 - " + tx.getReceiveAddress());
+						//BcErc20Token _token = tokenDao.selectToken(tx.getReceiveAddress());
+						//if (_token != null) {
+						BcErc20Transaction tokenTx = buildTokenTx(tx);
+						tokenTxList.add(tokenTx);
+						//}
+						ERC20Token token = EthUtils.getTokenInfo(web3j, tx.getReceiveAddress());
+						if (token.isValid()) {
+							// 添加Token记录
+							BcErc20Token bcToken = buildToken(token,tx);
+							tokenList.add(bcToken);
+							log.info("交易类型：创建 Token，Token地址  - " + tx.getReceiveAddress());
 						}
 					} else
 						log.info("交易类型：智能合约调用");
