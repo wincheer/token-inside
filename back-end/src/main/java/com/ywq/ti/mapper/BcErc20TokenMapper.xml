@@ -22,7 +22,7 @@
   
   <select id="totalTokens" parameterType="java.util.Map" resultType="java.lang.Long">
     select count(*) from bc_erc20_token
-    where 1==1
+    where 1=1 
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="tokenName != null">token_name = #{tokenName,jdbcType=VARCHAR} and </if>
       <if test="symbol != null">symbol = #{symbol,jdbcType=VARCHAR} and </if>
@@ -35,7 +35,7 @@
   
   <select id="selectTokenListPage" parameterType="java.util.Map" resultMap="BaseResultMap">
     select * from bc_erc20_token
-    where 1==1
+    where 1=1 
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="tokenName != null">token_name = #{tokenName,jdbcType=VARCHAR} and </if>
       <if test="symbol != null">symbol = #{symbol,jdbcType=VARCHAR} and </if>

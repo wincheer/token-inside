@@ -3,7 +3,11 @@ package com.ywq.ti.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.core.methods.response.EthBlock.Block;
 import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.Transaction;
@@ -19,14 +22,16 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import com.ywq.ti.common.ERC20Token;
 import com.ywq.ti.common.ERC20TokenData;
-import com.ywq.ti.common.TxType;
 import com.ywq.ti.common.EthUtils;
+import com.ywq.ti.common.TxType;
 import com.ywq.ti.dao.BcBlockMapper;
+import com.ywq.ti.dao.BcContractMapper;
 import com.ywq.ti.dao.BcCurrentBlockMapper;
 import com.ywq.ti.dao.BcErc20TokenMapper;
 import com.ywq.ti.dao.BcErc20TransactionMapper;
 import com.ywq.ti.dao.BcTransactionMapper;
 import com.ywq.ti.entity.BcBlock;
+import com.ywq.ti.entity.BcContract;
 import com.ywq.ti.entity.BcCurrentBlock;
 import com.ywq.ti.entity.BcErc20Token;
 import com.ywq.ti.entity.BcErc20Transaction;
@@ -47,13 +52,41 @@ public class EthBcService {
 	@Autowired
 	private BcErc20TokenMapper tokenDao;
 	@Autowired
+	private BcContractMapper contractDao;
+	@Autowired
 	private BcErc20TransactionMapper tokenTxDao;
 
 	public BcCurrentBlock currentBlockNumber(String BcType) {
-
 		BcCurrentBlock currentBlock = currentBlockDao.selectCurrentBlock(TxType.ETH);
-
 		return currentBlock;
+	}
+	
+	public Set<String> allTokens(){
+		Set<String> tokenSet = new TreeSet<String>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("start", 0);
+		param.put("pageSize", Integer.MAX_VALUE);
+		List<BcErc20Token> tokenList = tokenDao.selectTokenListPage(param);
+		for(BcErc20Token token:tokenList){
+			tokenSet.add(token.getTokenAddress());
+		}
+		
+		return tokenSet;
+	}
+	
+	public Set<String> allContracts(){
+		Set<String> contractSet = new TreeSet<String>();
+		
+		Map<String,Object> param = new HashMap<String,Object>();
+		param.put("start", 0);
+		param.put("pageSize", Integer.MAX_VALUE);
+		List<BcContract> contractList = contractDao.selectContractListPage(param);
+		for(BcContract contract:contractList){
+			contractSet.add(contract.getContractAddress());
+		}
+		
+		return contractSet;
 	}
 
 	/**
@@ -61,16 +94,19 @@ public class EthBcService {
 	 * @param currentBlock
 	 * @throws IOException 
 	 */
-	public void handleBlock(Web3j web3j, Block currentBlock) throws IOException {
+	public void handleBlock(Web3j web3j, Block currentBlock, Set<String> tokenSet, Set<String> contractSet)
+			throws IOException {
 		// TODO 发送监听事件
 		BcBlock block = buildBlock(currentBlock);
 		List<BcTransaction> txList = buildTxList(currentBlock.getTransactions());
 		List<BcErc20Token> tokenList = new ArrayList<BcErc20Token>();
+		List<BcContract> contractList = new ArrayList<BcContract>();
 		List<BcErc20Transaction> tokenTxList = new ArrayList<BcErc20Transaction>();
 
 		for (BcTransaction tx : txList) {
 			tx.setTimestamp(block.getTimestamp());
-			if (tx.getReceiveAddress() == null) {
+			String to = tx.getReceiveAddress();
+			if (to == null) {
 				// 交易：创建智能合约
 				tx.setTxType(TxType.CREATE_CONTRACT);
 				tx.setReceiveAddress("");
@@ -78,39 +114,32 @@ public class EthBcService {
 				ERC20Token token = EthUtils.getTokenInfo(web3j, txr.getContractAddress());
 				if (token.isValid()) {
 					// 添加Token记录
-					BcErc20Token bcToken = buildToken(token,tx);
+					BcErc20Token bcToken = buildToken(token, tx);
 					tokenList.add(bcToken);
 					log.info("交易类型：创建 Token，Token地址  - " + txr.getContractAddress());
-				}else
+					tokenSet.add(txr.getContractAddress());
+				} else {
+					// 添加智能合约记录
+					BcContract contract = buildContract(txr.getContractAddress(),tx);
+					contractList.add(contract);
 					log.info("交易类型：创建合约，合约地址  - " + txr.getContractAddress());
+					contractSet.add(txr.getContractAddress());
+				}
 			} else {
-				DefaultBlockParameterNumber blockParam = new DefaultBlockParameterNumber(tx.getBlockNumber());
-				String code = web3j.ethGetCode(tx.getReceiveAddress(), blockParam).send().getResult();
-				if (code == null || code.trim().equals("0x")) {
-					// 以太币转账
+				if(tokenSet.contains(to) && tx.getData().startsWith("0xa9059cbb") && tx.getData().trim().length() == 138){
+					tx.setTxType(TxType.TOKEN_TRANSFER);
+					log.info("交易类型：Token交易 - " + to);
+					BcErc20Transaction tokenTx = buildTokenTx(tx);
+					tokenTxList.add(tokenTx);
+				} //token交易
+				else if(contractSet.contains(to)){
+					tx.setTxType(TxType.EXE_CONTRACT);
+					log.info("交易类型：智能合约调用 - " + to);
+				} //合约调用
+				else{
 					tx.setTxType(TxType.ETHER_TRANSFER);
 					log.info("交易类型：以太币交易 ");
-				} else {
-					// 智能合约交易->检索token表->存在的话解析交易数据 。fix:插入的顺序不可预测，有可能token不在表中
-					// 合约交易的时候，to是合约地
-					tx.setTxType(TxType.EXE_CONTRACT);
-					if (tx.getData().startsWith("0xa9059cbb") && tx.getData().trim().length() == 138) {
-						log.info("交易类型：Token交易 - " + tx.getReceiveAddress());
-						//BcErc20Token _token = tokenDao.selectToken(tx.getReceiveAddress());
-						//if (_token != null) {
-						BcErc20Transaction tokenTx = buildTokenTx(tx);
-						tokenTxList.add(tokenTx);
-						//}
-						ERC20Token token = EthUtils.getTokenInfo(web3j, tx.getReceiveAddress());
-						if (token.isValid()) {
-							// 添加Token记录
-							BcErc20Token bcToken = buildToken(token,tx);
-							tokenList.add(bcToken);
-							log.info("交易类型：创建 Token，Token地址  - " + tx.getReceiveAddress());
-						}
-					} else
-						log.info("交易类型：智能合约调用");
-				}
+				} //ETH交易
 			}
 		}
 		// 持久化block、txList、token、tokenTxList
@@ -119,6 +148,8 @@ public class EthBcService {
 			txDao.insertTransactionBatch(txList);
 		if (!tokenList.isEmpty())
 			tokenDao.insertTokenBatch(tokenList);
+		if (!contractList.isEmpty())
+			contractDao.insertContractBatch(contractList);
 		if (!tokenTxList.isEmpty())
 			tokenTxDao.insertErc20TransactionBatch(tokenTxList);
 		// 更新待处理block_number
@@ -210,7 +241,7 @@ public class EthBcService {
 	 * @param token
 	 * @return
 	 */
-	private BcErc20Token buildToken(ERC20Token token,BcTransaction tx) {
+	private BcErc20Token buildToken(ERC20Token token, BcTransaction tx) {
 
 		BcErc20Token erc20Token = new BcErc20Token();
 
@@ -221,12 +252,30 @@ public class EthBcService {
 		erc20Token.setDecimals(token.getDecimals().longValue());
 		erc20Token.setHolders(0L);
 		erc20Token.setTransfers(0L);
-		
+
 		erc20Token.setTxHash(tx.getHash());
 		erc20Token.setBlockHash(tx.getBlockHash());
 		erc20Token.setBlockNumber(tx.getBlockNumber());
 
 		return erc20Token;
+	}
+	
+	/**
+	 * 生成Token持久化对象
+	 * @param token
+	 * @return
+	 */
+	private BcContract buildContract(String contractAddress,BcTransaction tx) {
+
+		BcContract contract = new BcContract();
+
+		contract.setContractAddress(contractAddress);
+
+		contract.setTxHash(tx.getHash());
+		contract.setBlockHash(tx.getBlockHash());
+		contract.setBlockNumber(tx.getBlockNumber());
+
+		return contract;
 	}
 
 }

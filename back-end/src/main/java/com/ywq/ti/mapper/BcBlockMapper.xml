@@ -20,7 +20,7 @@
   
   <select id="selectBlockList" parameterType="com.ywq.ti.entity.BcBlock" resultMap="BaseResultMap">
     select * from bc_block
-    where 1==1
+    where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="number != null">number = #{number,jdbcType=BIGINT} and </if>
       <if test="parentHash != null">parent_hash = #{parentHash,jdbcType=VARCHAR} and </if>
@@ -34,7 +34,7 @@
   
   <select id="totalBlocks" parameterType="java.util.Map" resultType="java.lang.Long">
     select count(*) from bc_block
-    where 1==1
+    where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="number != null">number = #{number,jdbcType=BIGINT} and </if>
       <if test="parentHash != null">parent_hash = #{parentHash,jdbcType=VARCHAR} and </if>
@@ -48,7 +48,7 @@
   
   <select id="selectBlockListPage" parameterType="java.util.Map" resultMap="BaseResultMap">
     select * from bc_block
-    where 1==1
+    where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="number != null">number = #{number,jdbcType=BIGINT} and </if>
       <if test="parentHash != null">parent_hash = #{parentHash,jdbcType=VARCHAR} and </if>

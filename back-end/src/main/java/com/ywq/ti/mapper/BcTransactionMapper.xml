@@ -23,7 +23,7 @@
   
   <select id="selectTransactionList" parameterType="com.ywq.ti.entity.BcTransaction" resultMap="BaseResultMap">
     select * from bc_transaction
-    where 1==1
+    where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="blockHash != null">block_hash = #{blockHash,jdbcType=VARCHAR} and </if>
       <if test="blockNumber != null">block_number = #{blockNumber,jdbcType=BIGINT} and </if>
@@ -40,7 +40,7 @@
   
   <select id="totalTransactions" parameterType="java.util.Map" resultType="java.lang.Long">
     select count(*) from bc_transaction
-    where 1==1
+    where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="blockHash != null">block_hash = #{blockHash,jdbcType=VARCHAR} and </if>
       <if test="blockNumber != null">block_number = #{blockNumber,jdbcType=BIGINT} and </if>
@@ -57,7 +57,7 @@
   
   <select id="selectTransactionListPage" parameterType="java.util.Map" resultMap="BaseResultMap">
     select * from bc_transaction
-    where 1==1
+    where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="blockHash != null">block_hash = #{blockHash,jdbcType=VARCHAR} and </if>
       <if test="blockNumber != null">block_number = #{blockNumber,jdbcType=BIGINT} and </if>

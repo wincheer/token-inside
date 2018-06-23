@@ -1,5 +1,7 @@
 package com.ywq.ti;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +34,15 @@ public class EtherumParser {
 	@Autowired
 	private EthBcService service;
 	
-	@Scheduled(fixedDelay = 5 * 1000)
+	@Scheduled(fixedDelay = 10 * 1000)
 	public void parseBlock() throws Exception{
 		
 		Web3jConfig web3jConfig = new Web3jConfig();
 		Web3j web3j = Web3j.build(web3jConfig.buildService(WEB3_CLIENT_URL));
 		//Web3j web3j = Web3j.build(new WindowsIpcService("\\\\.\\pipe\\geth.ipc")); //IPC
+		
+		Set<String> tokenSet = service.allTokens();
+		Set<String> contractSet = service.allContracts();
 		 
 		Long maxBlockBumber = (web3j.ethBlockNumber().send().getBlockNumber()).longValue();//最新的区块高度
 		log.info("最新区块高度：" + maxBlockBumber);
@@ -52,7 +57,7 @@ public class EtherumParser {
 			Long t_web3_1 = System.currentTimeMillis();
 			//处理当前区块
 			Long t_db_0 = System.currentTimeMillis();
-			service.handleBlock(web3j, currentBlock);
+			service.handleBlock(web3j, currentBlock,tokenSet,contractSet);
 			Long t_db_1 = System.currentTimeMillis();
 			log.info("已处理区块：" + currentBlockNumber + "/" + maxBlockBumber + " - Web3Read: " + (t_web3_1 - t_web3_0) + " - DBWrite: " + (t_db_1 - t_db_0));
 			
