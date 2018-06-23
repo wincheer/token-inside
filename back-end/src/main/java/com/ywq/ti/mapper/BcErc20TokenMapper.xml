@@ -52,7 +52,7 @@
     	(token_address, token_name, symbol, total_supply, decimals, holders,transfers,tx_hash,block_hash,block_number)
     values 
     	(#{tokenAddress,jdbcType=VARCHAR}, #{tokenName,jdbcType=VARCHAR}, #{symbol,jdbcType=VARCHAR}, #{totalSupply,jdbcType=VARCHAR}, #{decimals,jdbcType=BIGINT}, #{holders,jdbcType=BIGINT}, #{transfers,jdbcType=BIGINT}, #{txHash,jdbcType=VARCHAR}, #{blockHash,jdbcType=VARCHAR}, #{blockNumber,jdbcType=BIGINT})
-    ON DUPLICATE KEY UPDATE token_name = token_name
+    ON DUPLICATE KEY UPDATE transfers = transfers + 1
   </insert>
   
   <insert id="insertTokenBatch" useGeneratedKeys="false" keyProperty="tokenAddress" parameterType="java.util.List">
@@ -62,7 +62,7 @@
 	  <foreach collection="list" item="item" index="index" separator="," >  
 	      (#{item.tokenAddress,jdbcType=VARCHAR}, #{item.tokenName,jdbcType=VARCHAR}, #{item.symbol,jdbcType=VARCHAR}, #{item.totalSupply,jdbcType=VARCHAR}, #{item.decimals,jdbcType=BIGINT}, #{item.holders,jdbcType=BIGINT}, #{item.transfers,jdbcType=BIGINT}, #{item.txHash,jdbcType=VARCHAR}, #{item.blockHash,jdbcType=VARCHAR}, #{item.blockNumber,jdbcType=BIGINT})
 	  </foreach>  
-	ON DUPLICATE KEY UPDATE token_name = token_name
+	ON DUPLICATE KEY UPDATE transfers = transfers + 1
   </insert>
   
   <update id="updateToken" parameterType="com.ywq.ti.entity.BcErc20Token">
