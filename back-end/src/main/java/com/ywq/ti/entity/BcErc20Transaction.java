@@ -13,7 +13,7 @@ public class BcErc20Transaction {
     private BigInteger gasPrice;
     private String sendAddress; //发送方
     private String receiveAddress; //接收方
-    private BigInteger value; //Token 交易金额
+    private String value; //Token 交易金额 - 有变态大的数据超出数据库存储范围
     private Date timestamp; //实际完成时间
     
 	public String getTxHash() {
@@ -64,10 +64,10 @@ public class BcErc20Transaction {
 	public void setReceiveAddress(String receiveAddress) {
 		this.receiveAddress = receiveAddress;
 	}
-	public BigInteger getValue() {
+	public String getValue() {
 		return value;
 	}
-	public void setValue(BigInteger value) {
+	public void setValue(String value) {
 		this.value = value;
 	}
 	public Date getTimestamp() {

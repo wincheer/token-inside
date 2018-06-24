@@ -11,7 +11,7 @@
     <result column="gas_price" jdbcType="BIGINT" property="gasPrice" />
     <result column="send_address" jdbcType="VARCHAR" property="sendAddress" />
     <result column="receive_address" jdbcType="VARCHAR" property="receiveAddress" />
-    <result column="value" jdbcType="BIGINT" property="value" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
     <result column="timestamp" jdbcType="TIMESTAMP" property="timestamp" />
   </resultMap>
 
@@ -31,7 +31,7 @@
       <if test="gasPrice != null">gas_price = #{gasPrice,jdbcType=BIGINT} and </if>
       <if test="sendAddress != null">send_address = #{sendAddress,jdbcType=VARCHAR} and </if>
       <if test="receiveAddress != null">receive_address = #{receiveAddress,jdbcType=VARCHAR} and </if>
-      <if test="value != null">value = #{value,jdbcType=BIGINT} and </if>
+      <if test="value != null">value = #{value,jdbcType=VARCHAR} and </if>
       <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
 	</trim>
   </select>
@@ -47,7 +47,7 @@
       <if test="gasPrice != null">gas_price = #{gasPrice,jdbcType=BIGINT} and </if>
       <if test="sendAddress != null">send_address = #{sendAddress,jdbcType=VARCHAR} and </if>
       <if test="receiveAddress != null">receive_address = #{receiveAddress,jdbcType=VARCHAR} and </if>
-      <if test="value != null">value = #{value,jdbcType=BIGINT} and </if>
+      <if test="value != null">value = #{value,jdbcType=VARCHAR} and </if>
       <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
 	</trim>
   </select>
@@ -63,7 +63,7 @@
       <if test="gasPrice != null">gas_price = #{gasPrice,jdbcType=BIGINT} and </if>
       <if test="sendAddress != null">send_address = #{sendAddress,jdbcType=VARCHAR} and </if>
       <if test="receiveAddress != null">receive_address = #{receiveAddress,jdbcType=VARCHAR} and </if>
-      <if test="value != null">value = #{value,jdbcType=BIGINT} and </if>
+      <if test="value != null">value = #{value,jdbcType=VARCHAR} and </if>
       <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
 	</trim>
 	limit #{start},#{pageSize}
@@ -73,7 +73,7 @@
     insert into bc_erc20_transaction 
     	(tx_hash, token_address, block_hash, block_number, gas, gas_price, send_address, receive_address, value, timestamp)
     values 
-    	(#{txHash,jdbcType=VARCHAR}, #{tokenAddress,jdbcType=VARCHAR}, #{blockHash,jdbcType=VARCHAR}, #{blockNumber,jdbcType=BIGINT}, #{gas,jdbcType=BIGINT}, #{gasPrice,jdbcType=BIGINT}, #{sendAddress,jdbcType=VARCHAR}, #{receiveAddress,jdbcType=VARCHAR}, #{value,jdbcType=BIGINT}, #{timestamp,jdbcType=TIMESTAMP})
+    	(#{txHash,jdbcType=VARCHAR}, #{tokenAddress,jdbcType=VARCHAR}, #{blockHash,jdbcType=VARCHAR}, #{blockNumber,jdbcType=BIGINT}, #{gas,jdbcType=BIGINT}, #{gasPrice,jdbcType=BIGINT}, #{sendAddress,jdbcType=VARCHAR}, #{receiveAddress,jdbcType=VARCHAR}, #{value,jdbcType=VARCHAR}, #{timestamp,jdbcType=TIMESTAMP})
   </insert>
   
   <insert id="insertErc20TransactionBatch" useGeneratedKeys="false" keyProperty="txHash" parameterType="java.util.List">
@@ -81,7 +81,7 @@
     	(tx_hash, token_address, block_hash, block_number, gas, gas_price, send_address, receive_address, value, timestamp)
     values  
 	  <foreach collection="list" item="item" index="index" separator="," >  
-	      (#{item.txHash,jdbcType=VARCHAR}, #{item.tokenAddress,jdbcType=VARCHAR}, #{item.blockHash,jdbcType=VARCHAR}, #{item.blockNumber,jdbcType=BIGINT}, #{item.gas,jdbcType=BIGINT}, #{item.gasPrice,jdbcType=BIGINT}, #{item.sendAddress,jdbcType=VARCHAR}, #{item.receiveAddress,jdbcType=VARCHAR}, #{item.value,jdbcType=BIGINT}, #{item.timestamp,jdbcType=TIMESTAMP})
+	      (#{item.txHash,jdbcType=VARCHAR}, #{item.tokenAddress,jdbcType=VARCHAR}, #{item.blockHash,jdbcType=VARCHAR}, #{item.blockNumber,jdbcType=BIGINT}, #{item.gas,jdbcType=BIGINT}, #{item.gasPrice,jdbcType=BIGINT}, #{item.sendAddress,jdbcType=VARCHAR}, #{item.receiveAddress,jdbcType=VARCHAR}, #{item.value,jdbcType=VARCHAR}, #{item.timestamp,jdbcType=TIMESTAMP})
 	  </foreach>  
   </insert>
   
