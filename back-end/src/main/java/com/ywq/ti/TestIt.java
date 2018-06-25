@@ -26,7 +26,6 @@ public class TestIt {
 //		String token_address = "0xd654bdd32fc99471455e86c2e7f7d7b6437e9179";
 //		ERC20Token token = EthUtils.getTokenInfo(web3j, token_address);
 //		log.info(token.getTokenName()+"("+token.getSymbol()+"):" + token.getTotalSupply() +","+ token.getDecimals());
-
 		
 	}
 }

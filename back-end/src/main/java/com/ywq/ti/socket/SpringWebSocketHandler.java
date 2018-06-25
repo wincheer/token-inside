@@ -15,7 +15,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 
 	private static Logger logger = LoggerFactory.getLogger(SpringWebSocketHandler.class);
 
-	private static final Map<String, WebSocketSession> sessions = new HashMap<String, WebSocketSession>(); // 在线用户列表
+	private static final Map<String, WebSocketSession> online_users = new HashMap<String, WebSocketSession>(); // 在线用户列表
 	private static final String USER_ID = "WEBSOCKET_USERID"; 
 
 
@@ -24,8 +24,8 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 		String userId = session.getUri().getQuery().substring(8);
 		System.out.println("用户 "+userId+" 成功建立websocket连接!");
 		//String userId = (String) session.getAttributes().get(USER_ID);
-		sessions.put(userId, session);
-		System.out.println("当前线上用户数量:" + sessions.size());
+		online_users.put(userId, session);
+		System.out.println("当前线上用户数量:" + online_users.size());
 
 		// 这块会实现自己业务，比如，当用户登录后，会把离线消息推送给用户
 		TextMessage returnMessage = new TextMessage("成功建立socket连接，来自服务器端的问候");
@@ -38,8 +38,8 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 		//String userId = (String) session.getAttributes().get(USER_ID);
 		String userId = session.getUri().getQuery().substring(8);
 		System.out.println("用户" + userId + "已退出！");
-		sessions.remove(userId);
-		System.out.println("剩余在线用户" + sessions.size());
+		online_users.remove(userId);
+		System.out.println("剩余在线用户" + online_users.size());
 	}
 
 	@Override
@@ -64,7 +64,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 		}
 		logger.debug("传输出现异常，关闭websocket连接... ");
 		String userId = (String) session.getAttributes().get(USER_ID);
-		sessions.remove(userId);
+		online_users.remove(userId);
 	}
 
 	/** 
@@ -74,11 +74,11 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 	 * @param message 
 	 */
 	public void sendMessageToUser(String userId, TextMessage message) {
-		for (String id : sessions.keySet()) {
+		for (String id : online_users.keySet()) {
 			if (id.equals(userId)) {
 				try {
-					if (sessions.get(id).isOpen()) {
-						sessions.get(id).sendMessage(message);
+					if (online_users.get(id).isOpen()) {
+						online_users.get(id).sendMessage(message);
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -94,10 +94,10 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 	 * @param message 
 	 */
 	public void sendMessageToUsers(TextMessage message) {
-		for (String userId : sessions.keySet()) {
+		for (String userId : online_users.keySet()) {
 			try {
-				if (sessions.get(userId).isOpen()) {
-					sessions.get(userId).sendMessage(message);
+				if (online_users.get(userId).isOpen()) {
+					online_users.get(userId).sendMessage(message);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

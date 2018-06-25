@@ -16,7 +16,7 @@ public class RxBus {
 	private static volatile RxBus defaultInstance;
 	private final Subject<Object, Object> bus;
 
-	private RxBus() {
+	public RxBus() {
 		// 将 PublishSubject 转换为 SerializedSubject，确保线程安全
 		bus = new SerializedSubject<>(PublishSubject.create());
 	}
@@ -35,10 +35,10 @@ public class RxBus {
 
 	/**
 	 * 发送/发布/广播 事件
-	 * RxBus.getDefault().post(new UserEvent (1, "foo"));
+	 * RxBus.getDefault().publish(new UserEvent (1, "foo"));
 	 * @param event
 	 */
-	public void post(Object event) {
+	public void publish(Object event) {
 		if (bus == null) {
 			defaultInstance = new RxBus();
 		}
@@ -47,6 +47,7 @@ public class RxBus {
 
 	/**
 	 * 订阅事件
+	 * RxBus.getDefault().toObservable(UserEvent.class).subscribe(evt->{})
 	 * @param eventType
 	 * @return
 	 */
