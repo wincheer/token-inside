@@ -37,7 +37,7 @@ import wepy from 'wepy';
 export default class Foo extends wepy.page {
   data = {};
   methods = {};
-  //Page生命周期
+  //Page生命~周期
   onLoad() {
     // Do some initialize when page load.
   };
