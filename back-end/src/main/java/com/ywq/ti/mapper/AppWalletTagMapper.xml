@@ -9,77 +9,69 @@
     <result column="tag" jdbcType="VARCHAR" property="tag" />
   </resultMap>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select *
-    from app_wallet_tag
+  <select id="selectTag" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from app_wallet_tag
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="selectTagList" parameterType="com.ywq.ti.entity.AppWalletTag" resultMap="BaseResultMap">
+    select * from app_wallet_tag
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="wallet != null">wallet = #{wallet,jdbcType=VARCHAR} and </if>
+      <if test="tag != null">tag = #{tag,jdbcType=VARCHAR} and </if>
+	</trim>
+  </select>
+  
+  <select id="totalTags" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from app_wallet_tag
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="wallet != null">wallet = #{wallet,jdbcType=VARCHAR} and </if>
+      <if test="tag != null">tag = #{tag,jdbcType=VARCHAR} and </if>
+	</trim>
+  </select>
+  
+  <select id="selectTagListPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select * from app_wallet_tag
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="wallet != null">wallet = #{wallet,jdbcType=VARCHAR} and </if>
+      <if test="tag != null">tag = #{tag,jdbcType=VARCHAR} and </if>
+	</trim>
+	limit #{start},#{pageSize}
+  </select>
+  
+  <delete id="deleteTag" parameterType="java.lang.Long">
     delete from app_wallet_tag
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insert" parameterType="com.ywq.ti.entity.AppWalletTag">
-    insert into app_wallet_tag (id, user_id, wallet, 
-      tag)
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{wallet,jdbcType=VARCHAR}, 
-      #{tag,jdbcType=VARCHAR})
-  </insert>
-
-  <insert id="insertSelective" parameterType="com.ywq.ti.entity.AppWalletTag">
+  <insert id="insertTag" parameterType="com.ywq.ti.entity.AppWalletTag">
     insert into app_wallet_tag
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="wallet != null">
-        wallet,
-      </if>
-      <if test="tag != null">
-        tag,
-      </if>
+      <if test="userId != null">user_id,</if>
+      <if test="wallet != null">wallet,</if>
+      <if test="tag != null">tag,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="wallet != null">
-        #{wallet,jdbcType=VARCHAR},
-      </if>
-      <if test="tag != null">
-        #{tag,jdbcType=VARCHAR},
-      </if>
+      <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
+      <if test="wallet != null">#{wallet,jdbcType=VARCHAR},</if>
+      <if test="tag != null">#{tag,jdbcType=VARCHAR},</if>
     </trim>
   </insert>
   
-  <update id="updateByPrimaryKeySelective" parameterType="com.ywq.ti.entity.AppWalletTag">
+  <update id="updateTag" parameterType="com.ywq.ti.entity.AppWalletTag">
     update app_wallet_tag
     <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="wallet != null">
-        wallet = #{wallet,jdbcType=VARCHAR},
-      </if>
-      <if test="tag != null">
-        tag = #{tag,jdbcType=VARCHAR},
-      </if>
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT},</if>
+      <if test="wallet != null">wallet = #{wallet,jdbcType=VARCHAR},</if>
+      <if test="tag != null">tag = #{tag,jdbcType=VARCHAR},</if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-
-  <update id="updateByPrimaryKey" parameterType="com.ywq.ti.entity.AppWalletTag">
-    update app_wallet_tag
-    set user_id = #{userId,jdbcType=BIGINT},
-      wallet = #{wallet,jdbcType=VARCHAR},
-      tag = #{tag,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+  
 </mapper>

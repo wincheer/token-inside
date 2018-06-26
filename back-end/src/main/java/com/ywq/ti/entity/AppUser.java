@@ -8,6 +8,7 @@ public class AppUser {
     private String nickName;
     private String password;
     private Integer level;
+    private Integer bonus;
     
 	public Long getId() {
 		return id;
@@ -44,6 +45,12 @@ public class AppUser {
 	}
 	public void setLevel(Integer level) {
 		this.level = level;
+	}
+	public Integer getBonus() {
+		return bonus;
+	}
+	public void setBonus(Integer bonus) {
+		this.bonus = bonus;
 	}
 
 

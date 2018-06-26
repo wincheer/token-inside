@@ -1,18 +1,22 @@
 package com.ywq.ti.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.ywq.ti.entity.AppWalletTag;
 
 public interface AppWalletTagMapper {
 
-    int deleteByPrimaryKey(Long id);
+	AppWalletTag selectTag(Long id);
+	
+	List<AppWalletTag> selectTagList(AppWalletTag record);
+	
+	Long totalTags(Map<String,Object> param);
+	List<AppWalletTag> selectTagListPage(Map<String, Object> map);
+	
+	void deleteTag(Long id);
 
-    int insert(AppWalletTag record);
+    void insertTag(AppWalletTag record);
 
-    int insertSelective(AppWalletTag record);
-
-    AppWalletTag selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(AppWalletTag record);
-
-    int updateByPrimaryKey(AppWalletTag record);
+    void updateTag(AppWalletTag record);
 }

@@ -2,6 +2,7 @@ package com.ywq.ti.socket;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,9 +12,11 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.ywq.ti.common.BcMessage;
+
 public class SpringWebSocketHandler extends TextWebSocketHandler {
 
-	private static Logger logger = LoggerFactory.getLogger(SpringWebSocketHandler.class);
+	private static Logger log = LoggerFactory.getLogger(SpringWebSocketHandler.class);
 
 	private static final Map<String, WebSocketSession> online_users = new HashMap<String, WebSocketSession>(); // 在线用户列表
 	private static final String USER_ID = "WEBSOCKET_USERID"; 
@@ -34,7 +37,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
-		logger.debug("关闭websocket连接");
+		log.debug("关闭websocket连接");
 		//String userId = (String) session.getAttributes().get(USER_ID);
 		String userId = session.getUri().getQuery().substring(8);
 		System.out.println("用户" + userId + "已退出！");
@@ -62,7 +65,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 		if (session.isOpen()) {
 			session.close();
 		}
-		logger.debug("传输出现异常，关闭websocket连接... ");
+		log.debug("传输出现异常，关闭websocket连接... ");
 		String userId = (String) session.getAttributes().get(USER_ID);
 		online_users.remove(userId);
 	}
@@ -81,7 +84,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 						online_users.get(id).sendMessage(message);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				break;
 			}
@@ -100,14 +103,19 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 					online_users.get(userId).sendMessage(message);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 	}
-	
-	//测试一下普通组建能否调用“我”
-	public String hellobaby(){
-		return "Hello,world!";
+
+	/**
+	 * 根据订阅内容，通知在线用户交易信息
+	 * @param msgList
+	 */
+	public void notifyTxInfo(List<BcMessage> msgList) {
+		// TODO Auto-generated method stub
+		//1.遍历每一个在线用户
+		//2.如果用户订阅了内容 -> 推送消息 -> 更新订阅的最新日期
 	}
 
 }

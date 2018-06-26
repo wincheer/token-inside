@@ -23,6 +23,7 @@
       <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
       <if test="eventMsg != null">event_msg = #{eventMsg,jdbcType=VARCHAR} and </if>
       <if test="bonus != null">bonus = #{bonus,jdbcType=INTEGER} and </if>
+      <if test="create != null">create = #{create,jdbcType=TIMESTAMP} and </if>
 	</trim>
   </select>
   
@@ -34,6 +35,7 @@
       <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
       <if test="eventMsg != null">event_msg = #{eventMsg,jdbcType=VARCHAR} and </if>
       <if test="bonus != null">bonus = #{bonus,jdbcType=INTEGER} and </if>
+      <if test="create != null">create = #{create,jdbcType=TIMESTAMP} and </if>
 	</trim>
   </select>
   
@@ -45,6 +47,7 @@
       <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
       <if test="eventMsg != null">event_msg = #{eventMsg,jdbcType=VARCHAR} and </if>
       <if test="bonus != null">bonus = #{bonus,jdbcType=INTEGER} and </if>
+      <if test="create != null">create = #{create,jdbcType=TIMESTAMP} and </if>
 	</trim>
 	limit #{start},#{pageSize}
   </select>
@@ -57,6 +60,7 @@
       <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
       <if test="eventMsg != null">event_msg = #{eventMsg,jdbcType=VARCHAR} and </if>
       <if test="bonus != null">bonus = #{bonus,jdbcType=INTEGER} and </if>
+      <if test="create != null">create = #{create,jdbcType=TIMESTAMP} and </if>
 	</trim>
   </delete>
 
@@ -66,11 +70,13 @@
       <if test="userId != null">user_id,</if>
       <if test="eventMsg != null">event_msg,</if>
       <if test="bonus != null">bonus,</if>
+      <if test="create != null">create,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
       <if test="eventMsg != null">#{eventMsg,jdbcType=VARCHAR},</if>
       <if test="bonus != null">#{bonus,jdbcType=INTEGER},</if>
+      <if test="create != null">#{create,jdbcType=TIMESTAMP},</if>
     </trim>
   </insert>
 
@@ -80,7 +86,6 @@
       <if test="userId != null">user_id = #{userId,jdbcType=BIGINT},</if>
       <if test="eventMsg != null">event_msg = #{eventMsg,jdbcType=VARCHAR},</if>
       <if test="bonus != null">bonus = #{bonus,jdbcType=INTEGER},</if>
-      <if test="create != null">create = #{create,jdbcType=TIMESTAMP},</if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>

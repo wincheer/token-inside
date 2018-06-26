@@ -7,79 +7,91 @@
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="topic" jdbcType="VARCHAR" property="topic" />
+    <result column="update" jdbcType="TIMESTAMP" property="create" />
   </resultMap>
 
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select * 
-    from app_user_subscribe
+  <select id="selectSubscribe" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from app_user_subscribe
     where id = #{id,jdbcType=BIGINT}
   </select>
   
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="selectSubscribeList" parameterType="com.ywq.ti.entity.AppUserSubscribe" resultMap="BaseResultMap">
+    select * from app_user_subscribe
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="address != null">address = #{address,jdbcType=VARCHAR} and </if>
+      <if test="topic != null">topic = #{topic,jdbcType=VARCHAR} and </if>
+      <if test="update != null">update > #{update,jdbcType=TIMESTAMP} and </if>
+	</trim>
+  </select>
+  
+  <select id="totalSubscribes" parameterType="java.util.Map" resultType="java.lang.Long">
+    select count(*) from app_user_subscribe
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="address != null">address = #{address,jdbcType=VARCHAR} and </if>
+      <if test="topic != null">topic = #{topic,jdbcType=VARCHAR} and </if>
+      <if test="update != null">update > #{update,jdbcType=TIMESTAMP} and </if>
+	</trim>
+  </select>
+  
+  <select id="selectSubscribeListPage" parameterType="java.util.Map" resultType="java.lang.Long">
+    select * from app_user_subscribe
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="address != null">address = #{address,jdbcType=VARCHAR} and </if>
+      <if test="topic != null">topic = #{topic,jdbcType=VARCHAR} and </if>
+      <if test="update != null">update > #{update,jdbcType=TIMESTAMP} and </if>
+	</trim>
+	limit #{start},#{pageSize}
+  </select>
+  
+  <delete id="deleteSubscribe" parameterType="java.lang.Long">
     delete from app_user_subscribe
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insert" parameterType="com.ywq.ti.entity.AppUserSubscribe">
-    insert into app_user_subscribe (id, user_id, address, 
-      topic)
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{address,jdbcType=VARCHAR}, 
-      #{topic,jdbcType=VARCHAR})
-  </insert>
-
-  <insert id="insertSelective" parameterType="com.ywq.ti.entity.AppUserSubscribe">
+  <insert id="insertSubscribe" parameterType="com.ywq.ti.entity.AppUserSubscribe">
     insert into app_user_subscribe
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="address != null">
-        address,
-      </if>
-      <if test="topic != null">
-        topic,
-      </if>
+      <if test="id != null">id,</if>
+      <if test="userId != null">user_id,</if>
+      <if test="address != null">address,</if>
+      <if test="topic != null">topic,</if>
+      <if test="update != null">update,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="address != null">
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="topic != null">
-        #{topic,jdbcType=VARCHAR},
-      </if>
+      <if test="id != null">#{id,jdbcType=BIGINT},</if>
+      <if test="userId != null">#{userId,jdbcType=BIGINT},</if>
+      <if test="address != null">#{address,jdbcType=VARCHAR},</if>
+      <if test="topic != null">#{topic,jdbcType=VARCHAR},</if>
+      <if test="update != null">#{update,jdbcType=TIMESTAMP},</if>
     </trim>
   </insert>
 
-  <update id="updateByPrimaryKeySelective" parameterType="com.ywq.ti.entity.AppUserSubscribe">
+  <update id="updateSubscribe" parameterType="com.ywq.ti.entity.AppUserSubscribe">
     update app_user_subscribe
     <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="address != null">
-        address = #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="topic != null">
-        topic = #{topic,jdbcType=VARCHAR},
-      </if>
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT},</if>
+      <if test="address != null">address = #{address,jdbcType=VARCHAR},</if>
+      <if test="topic != null">topic = #{topic,jdbcType=VARCHAR},</if>
+      <if test="update != null">update = #{update,jdbcType=TIMESTAMP},</if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-
-  <update id="updateByPrimaryKey" parameterType="com.ywq.ti.entity.AppUserSubscribe">
-    update app_user_subscribe
-    set user_id = #{userId,jdbcType=BIGINT},
-      address = #{address,jdbcType=VARCHAR},
-      topic = #{topic,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
+  
+  <update id="updateSubscribeDate" parameterType="com.ywq.ti.entity.AppUserSubscribe">
+    update app_user_subscribe set update = #{update,jdbcType=TIMESTAMP}
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="id != null">id = #{id,jdbcType=BIGINT} and </if>
+      <if test="userId != null">user_id = #{userId,jdbcType=BIGINT} and </if>
+      <if test="address != null">address = #{address,jdbcType=VARCHAR} and </if>
+      <if test="topic != null">topic = #{topic,jdbcType=VARCHAR} and </if>
+	</trim>
   </update>
+
 </mapper>

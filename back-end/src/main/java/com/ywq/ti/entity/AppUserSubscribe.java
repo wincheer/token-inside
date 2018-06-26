@@ -1,11 +1,14 @@
 package com.ywq.ti.entity;
 
+import java.util.Date;
+
 public class AppUserSubscribe {
 
     private Long id;
     private Long userId;
     private String address;
     private String topic;
+    private Date update;
     
 	public Long getId() {
 		return id;
@@ -30,6 +33,12 @@ public class AppUserSubscribe {
 	}
 	public void setTopic(String topic) {
 		this.topic = topic;
+	}
+	public Date getUpdate() {
+		return update;
+	}
+	public void setUpdate(Date update) {
+		this.update = update;
 	}
 
 }
