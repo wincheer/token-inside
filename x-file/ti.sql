@@ -10,23 +10,10 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-06-25 18:27:19
+Date: 2018-06-26 19:04:18
 */
 
 SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for app_message
--- ----------------------------
-DROP TABLE IF EXISTS `app_message`;
-CREATE TABLE `app_message` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(20) DEFAULT NULL,
-  `msg` varchar(255) DEFAULT NULL,
-  `create` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `is_read` int(11) DEFAULT '0' COMMENT '0 未读，1已读',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for app_user
@@ -39,6 +26,7 @@ CREATE TABLE `app_user` (
   `nick_name` varchar(50) DEFAULT NULL,
   `password` varchar(50) DEFAULT NULL COMMENT '预备扩展的字段，微信注册的话无需密码',
   `level` int(11) DEFAULT '1' COMMENT '用户等级',
+  `bonus` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -51,7 +39,7 @@ CREATE TABLE `app_user_bonus` (
   `user_id` bigint(20) DEFAULT NULL,
   `event_msg` varchar(255) DEFAULT NULL,
   `bonus` int(11) DEFAULT NULL COMMENT '积分变动，正负表示花费和增加',
-  `create` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `create` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -64,6 +52,7 @@ CREATE TABLE `app_user_subscribe` (
   `user_id` bigint(20) DEFAULT NULL,
   `address` varchar(100) DEFAULT NULL,
   `topic` varchar(50) DEFAULT 'token' COMMENT '订阅钱包wallet或者Token',
+  `update` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
