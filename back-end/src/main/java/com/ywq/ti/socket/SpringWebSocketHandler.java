@@ -111,11 +111,24 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 	/**
 	 * 根据订阅内容，通知在线用户交易信息
 	 * @param msgList
+	 * @throws IOException 
 	 */
-	public void notifyTxInfo(List<BcMessage> msgList) {
+	public void notifyTxInfo(List<BcMessage> msgList) throws IOException {
 		// TODO Auto-generated method stub
 		//1.遍历每一个在线用户
 		//2.如果用户订阅了内容 -> 推送消息 -> 更新订阅的最新日期
+		TextMessage message = new TextMessage("itemInMsgList");
+		for (String userId : online_users.keySet()) {
+			if (online_users.get(userId).isOpen()) {
+				Map<String,String> userSubscribes = getSubscribesOf(userId); //map<address,token/wallet>
+				for(BcMessage msg:msgList){
+					if(userSubscribes.containsKey(msg.getFrom())||userSubscribes.containsKey(msg.getTo())){
+						//发消息online_users.get(userId).sendMessage(message);
+						//更新订阅更新时间 updateSubscribe((userId,address)|subscribeId,msg.timestamp)
+					}
+				}
+			}
+		}
 	}
 
 }
