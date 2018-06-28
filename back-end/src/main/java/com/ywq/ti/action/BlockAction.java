@@ -24,7 +24,7 @@ public class BlockAction {
 
 	@RequestMapping(value = "/addFoo1", method = RequestMethod.GET)
 	public void addFoo1() {
-		myHandler.sendMessageToUser("18602010502",new TextMessage("这是来自遥远的第三方发送的消息"));
+		myHandler.sendMessageToUser(18602010502L,new TextMessage("这是来自遥远的第三方发送的消息"));
 	}
 
 }

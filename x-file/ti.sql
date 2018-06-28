@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50717
 File Encoding         : 65001
 
-Date: 2018-06-26 19:04:18
+Date: 2018-06-28 15:44:28
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -31,6 +31,10 @@ CREATE TABLE `app_user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of app_user
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for app_user_bonus
 -- ----------------------------
 DROP TABLE IF EXISTS `app_user_bonus`;
@@ -42,6 +46,10 @@ CREATE TABLE `app_user_bonus` (
   `create` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of app_user_bonus
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for app_user_subscribe
@@ -57,6 +65,10 @@ CREATE TABLE `app_user_subscribe` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of app_user_subscribe
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for app_wallet_tag
 -- ----------------------------
 DROP TABLE IF EXISTS `app_wallet_tag`;
@@ -67,6 +79,10 @@ CREATE TABLE `app_wallet_tag` (
   `tag` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of app_wallet_tag
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_block
@@ -100,6 +116,10 @@ CREATE TABLE `bc_block` (
  PARTITION p9 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
 
 -- ----------------------------
+-- Records of bc_block
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for bc_contract
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_contract`;
@@ -109,10 +129,14 @@ CREATE TABLE `bc_contract` (
   `block_number` bigint(20) unsigned NOT NULL,
   `tx_hash` varchar(100) NOT NULL,
   PRIMARY KEY (`contract_address`),
+  KEY `token_address` (`contract_address`),
   KEY `tx_hash` (`tx_hash`),
-  KEY `block_hash` (`block_hash`),
-  KEY `contract_address` (`contract_address`) USING BTREE
+  KEY `block_hash` (`block_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of bc_contract
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_current_block
@@ -125,26 +149,35 @@ CREATE TABLE `bc_current_block` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
+-- Records of bc_current_block
+-- ----------------------------
+INSERT INTO `bc_current_block` VALUES ('ETH', '0');
+
+-- ----------------------------
 -- Table structure for bc_erc20_token
 -- ----------------------------
 DROP TABLE IF EXISTS `bc_erc20_token`;
 CREATE TABLE `bc_erc20_token` (
-  `token_address` varchar(100) NOT NULL,
+  `token_address` varchar(42) NOT NULL,
   `token_name` mediumtext CHARACTER SET utf8mb4 NOT NULL,
-  `block_hash` varchar(100) NOT NULL,
-  `block_number` bigint(20) unsigned NOT NULL,
-  `tx_hash` varchar(100) NOT NULL,
-  `symbol` varchar(100) CHARACTER SET utf8mb4 DEFAULT NULL,
+  `symbol` varchar(200) CHARACTER SET utf8mb4 DEFAULT NULL,
   `total_supply` varchar(100) NOT NULL,
   `decimals` bigint(20) NOT NULL DEFAULT '0',
-  `holders` bigint(20) NOT NULL DEFAULT '0' COMMENT '账户数量',
-  `transfers` bigint(20) NOT NULL DEFAULT '0' COMMENT '交易次数',
+  `holders` bigint(10) NOT NULL DEFAULT '0' COMMENT '账户数量',
+  `transfers` bigint(15) NOT NULL DEFAULT '0' COMMENT '交易次数',
+  `tx_hash` varchar(66) NOT NULL,
+  `block_hash` varchar(66) NOT NULL,
+  `block_number` bigint(10) unsigned NOT NULL,
   PRIMARY KEY (`token_address`),
   KEY `token_address` (`token_address`),
   KEY `tx_hash` (`tx_hash`),
   KEY `block_hash` (`block_hash`),
   KEY `symbol` (`symbol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of bc_erc20_token
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_erc20_transaction
@@ -160,7 +193,7 @@ CREATE TABLE `bc_erc20_transaction` (
   `gas_price` decimal(50,0) NOT NULL,
   `send_address` varchar(100) NOT NULL,
   `receive_address` varchar(100) NOT NULL DEFAULT '',
-  `value` decimal(50,0) unsigned NOT NULL DEFAULT '0',
+  `value` varchar(100) NOT NULL DEFAULT '0',
   `timestamp` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `tx_hash` (`tx_hash`),
@@ -273,6 +306,10 @@ CREATE TABLE `bc_erc20_transaction` (
  PARTITION p98 VALUES LESS THAN (198000000) ENGINE = InnoDB,
  PARTITION p99 VALUES LESS THAN (200000000) ENGINE = InnoDB,
  PARTITION p100 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
+
+-- ----------------------------
+-- Records of bc_erc20_transaction
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for bc_transaction
@@ -401,3 +438,7 @@ CREATE TABLE `bc_transaction` (
  PARTITION p98 VALUES LESS THAN (198000000) ENGINE = InnoDB,
  PARTITION p99 VALUES LESS THAN (200000000) ENGINE = InnoDB,
  PARTITION p100 VALUES LESS THAN MAXVALUE ENGINE = InnoDB) */;
+
+-- ----------------------------
+-- Records of bc_transaction
+-- ----------------------------

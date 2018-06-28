@@ -40,5 +40,10 @@ public class AppUserSubscribe {
 	public void setUpdate(Date update) {
 		this.update = update;
 	}
+	
+	public static void main(String[] args) {
+		String s = "0x2a65aca4d5fc5b5c859090a6c34d164135398226";
+		System.out.println(s.length());
+	}
 
 }
