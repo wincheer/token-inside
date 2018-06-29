@@ -94,7 +94,9 @@ public class EthUtils {
 	 */
 	public static HumanStandardToken load(Web3j web3j, String contractAddress) {
 
-		String fromAddress = "0xa70fda378fa295ab08722a534f894b8794445d10"; // 任意有效钱包地址
+		//String fromAddress = "0xa70fda378fa295ab08722a534f894b8794445d10"; // 任意有效钱包地址
+		String fromAddress = "0x0000000000000000000000000000000000000000";
+		
 		BigInteger GAS_PRICE = BigInteger.valueOf(250000L);
 		BigInteger GAS_LIMIT = BigInteger.valueOf(12000000000L);
 

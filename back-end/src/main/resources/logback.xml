@@ -23,9 +23,9 @@
 
     <!-- Change to DEBUG log protocol messages -->
     <logger name="org.web3j.protocol" level="INFO"/>
-    <logger name="com.ywq.ti.dao" level="INFO"/> <!-- debug可以显示SQL语句 -->
+    <logger name="com.ywq.ti.dao" level="DEBUG"/> <!-- debug可以显示SQL语句 -->
     
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />   
     </root>
