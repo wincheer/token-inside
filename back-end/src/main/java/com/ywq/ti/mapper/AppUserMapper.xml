@@ -65,7 +65,7 @@
 	</trim>
   </delete>
 
-  <insert id="insertUser" parameterType="com.ywq.ti.entity.AppUser">
+  <insert id="insertUser" useGeneratedKeys="true" keyProperty="id" parameterType="com.ywq.ti.entity.AppUser">
     insert into app_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="unionId != null">union_id,</if>

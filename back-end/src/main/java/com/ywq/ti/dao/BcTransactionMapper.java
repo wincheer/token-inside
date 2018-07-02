@@ -14,6 +14,8 @@ public interface BcTransactionMapper {
 	Long totalTransactions(Map<String,Object> param);
 	
 	List<BcTransaction> selectTransactionListPage(Map<String, Object> map);
+	
+	Long selectMaxTransaction();
 
 	int insertTransaction(BcTransaction transaction);
 

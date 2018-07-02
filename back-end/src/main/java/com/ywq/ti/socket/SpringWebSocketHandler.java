@@ -16,9 +16,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.ywq.ti.common.BcMessage;
 import com.ywq.ti.dao.AppUserSubscribeMapper;
-import com.ywq.ti.dao.BcBlockMapper;
 import com.ywq.ti.entity.AppUserSubscribe;
-import com.ywq.ti.entity.BcBlock;
 
 public class SpringWebSocketHandler extends TextWebSocketHandler {
 

@@ -69,6 +69,10 @@
 	limit #{start},#{pageSize}
   </select>
   
+  <select id="selectMaxErc20Transaction" resultType="java.lang.Long">
+    select ifnull( max(id), 0) from bc_erc20_transaction
+  </select>
+  
   <insert id="insertErc20Transaction" parameterType="com.ywq.ti.entity.BcErc20Transaction">
     insert into bc_erc20_transaction 
     	(tx_hash, token_address, block_hash, block_number, gas, gas_price, send_address, receive_address, value, timestamp)

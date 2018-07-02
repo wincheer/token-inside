@@ -73,6 +73,10 @@
 	limit #{start},#{pageSize}
   </select>
   
+  <select id="selectMaxTransaction" resultType="java.lang.Long">
+    SELECT ifnull( max(id), 0) FROM bc_transaction;
+  </select>
+  
   <insert id="insertTransaction" parameterType="com.ywq.ti.entity.BcTransaction">
     insert into bc_transaction 
     	(hash, block_hash, block_number,gas, gas_price, send_address, receive_address, value, data, timestamp, tx_type)

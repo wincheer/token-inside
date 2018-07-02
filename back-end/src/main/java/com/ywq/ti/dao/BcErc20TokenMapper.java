@@ -12,6 +12,8 @@ public interface BcErc20TokenMapper {
 	Long totalTokens(Map<String,Object> param);
 	
 	List<BcErc20Token> selectTokenListPage(Map<String,Object> param);
+	
+	Long selectMaxToken();
     
 	int insertToken(BcErc20Token token);
 	

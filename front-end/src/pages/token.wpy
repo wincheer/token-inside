@@ -1,0 +1,133 @@
+<template>
+  <view class="page">
+    <!-- <view class="page__hd">
+        <view class="page__title">Flex</view>
+        <view class="page__desc">Flex布局</view>
+    </view> -->
+    
+    <view class="weui-search-bar">
+        <view class="weui-search-bar__form">
+            <view class="weui-search-bar__box">
+                <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                    <icon type="clear" size="14"></icon>
+                </view>
+            </view>
+            <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                <icon class="weui-icon-search" type="search" size="14"></icon>
+                <view class="weui-search-bar__text">搜索</view>
+            </label>
+        </view>
+        <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+    </view>
+
+    <view class="page__bd page__bd_spacing">
+        <view class="weui-cells__title">Token 列表</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cells weui-cells_after-title">
+            <repeat for="{{tokenList}}" key="index" index="index" item="item">
+              <view class="weui-cell">
+                  <view class="weui-cell__bd">{{item.tokenName}}</view>
+                  <!-- <icon type="success"/> -->
+                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+              </view>
+            </repeat>
+          </view>
+      </view>
+    </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import { SELECT_TOKEN_LIST_PAGE } from '@/config/api.js';
+export default class Token extends wepy.page {
+  data = {
+    pageNo: 1,
+    pageSize: 50,
+    totalPages: 1,
+    hasMoreData: true,
+    tokenList: [],
+    inputShowed: false,
+    inputVal: ''
+  };
+  methods = {};
+  //Page生命~周期
+  onLoad() {
+    // Do some initialize when page load.
+  }
+  onReady() {
+    //queryTokenListPage();
+  }
+  onShow() {
+    // Do something when page show.
+    this.queryTokenListPage();
+  }
+  onHide() {
+    // Do something when page hide.
+  }
+  onUnload() {
+    // Do something when page close.
+  }
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {
+    this.queryTokenListPage();
+  }
+
+  queryTokenListPage() {
+    var _this = this;
+    let params = {
+      pageNo: _this.pageNo,
+      pageSize: _this.pageSize
+    };
+    SELECT_TOKEN_LIST_PAGE(params).then(res => {
+      _this.totalPages = res.totalPages;
+      _this.$apply();
+      if (_this.pageNo < _this.totalPages) {
+        _this.pageNo = _this.pageNo + 1;
+        _this.tokenList = _this.tokenList.concat(res.rows);
+      } else {
+        if (_this.tokenList.length == 0) _this.tokenList = res.rows;
+      }
+    });
+  }
+
+  showInput() {
+    this.setData({
+      inputShowed: true
+    });
+  }
+  hideInput() {
+    this.setData({
+      inputVal: '',
+      inputShowed: false
+    });
+  }
+  clearInput() {
+    this.setData({
+      inputVal: ''
+    });
+  }
+  inputTyping(e) {
+    this.setData({
+      inputVal: e.detail.value
+    });
+  }
+}
+</script>
+
+<style lang="less">
+.placeholder {
+  margin: 5px;
+  padding: 0 10px;
+  text-align: center;
+  background-color: #ebebeb;
+  height: 2.3em;
+  line-height: 2.3em;
+  color: #cfcfcf;
+}
+</style>

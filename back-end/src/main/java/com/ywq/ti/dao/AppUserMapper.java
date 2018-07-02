@@ -16,7 +16,7 @@ public interface AppUserMapper {
 	
     void deleteUser(AppUser record);
     
-    void insertUser(AppUser record);
+    Long insertUser(AppUser record);
     
     void updateUser(AppUser record);
 }

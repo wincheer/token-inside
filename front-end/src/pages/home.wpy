@@ -2,39 +2,35 @@
   <view class="page">
     <view class="page__hd">
       <view class="page__title">{{foo}}</view>
-      <view class="page__desc">TokenInside(简称TI) 是一套同微信原生视觉体验一致的基础样式库，由微信官方设计团队为微信内网页和微信小程序量身设计，令用户的使用感知更加统一。</view>
+      <view class="page__desc">TokenInside(简称TI) 是一套以太坊交易监控和分析程序，为以太币交易和 Token 交易量身设计，令用户对以太坊的内幕 Token 更加清晰。</view>
     </view>
-    <view class="page__bd">
-      <view class="weui-btn-area">
-        <button class="weui-btn" type="default" @tap="openConfirm">确认对话框</button>
-        <button class="weui-btn" type="default" @tap="openCam">用户登录</button>
-        <button class="weui-btn" wx:if="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">获取用户信息</button>
-        <button class="weui-btn" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">获取微信绑定电话</button>
-      </view>
-      <view class="weui-cells__title">项目列表</view>
-      <view class="weui-cells weui-cells_after-title">
-        
+    <view class="page__bd  page__bd_spacing">
+      <view class="weui-cells__title">以太坊区块链概述</view>
         <view class="weui-cells weui-cells_after-title">
-          <repeat for="{{projectList}}" key="index" index="index" item="item">
             <view class="weui-cell">
-                <view class="weui-cell__bd">{{item.projectName}}</view>
-                <!-- <view class="weui-cell__ft">{{item.projectName}}</view> -->
-                <icon type="success"/>
+                <view class="weui-cell__bd">最新区块：</view>
+                <view class="weui-cell__ft">{{overview.bestBlock}}</view>
             </view>
-          </repeat>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">全部交易数：</view>
+                <view class="weui-cell__ft">{{overview.maxTransaction}}</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">Token总数：</view>
+                <view class="weui-cell__ft">{{overview.maxToken}}</view>
+            </view>
+            <view class="weui-cell">
+                <view class="weui-cell__bd">Token交易总数：</view>
+                <view class="weui-cell__ft">{{overview.maxTokenTx}}</view>
+            </view>
         </view>
-        
-        <!-- <repeat for="{{projectList}}" key="index" index="index" item="item">
-            <view class="weui-cell__ft">{{item.projectName}}</view>
-        </repeat> -->
-      </view>
     </view>
   </view>
 </template>
 
 <script>
 import wepy from 'wepy';
-import { SELECT_PROJECT_LIST } from '@/config/api.js';
+import { BC_OVERVIEW } from '@/config/api.js';
 export default class Home extends wepy.page {
   config = {
     navigationBarTitleText: '首页'
@@ -42,7 +38,7 @@ export default class Home extends wepy.page {
 
   data = {
     foo: 'TokenInside',
-    projectList: [],
+    overview: {},
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   };
 
@@ -76,15 +72,6 @@ export default class Home extends wepy.page {
       });
     },
     openCam() {
-      // wx.chooseImage({
-      //   count: 1, // 默认9
-      //   sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
-      //   sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
-      //   success: function(res) {
-      //     // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
-      //     var tempFilePaths = res.tempFilePaths;
-      //   }
-      // });
       wx.login({
         success: function(res) {
           if (res.code) {
@@ -98,21 +85,16 @@ export default class Home extends wepy.page {
     }
   };
 
-  queryFromServer() {
+  queryBcOverview() {
     var _this = this;
-    let params = {};
-    SELECT_PROJECT_LIST(params).then(res => {
-      _this.projectList = res;
+    BC_OVERVIEW().then(res => {
+      _this.overview = res;
       _this.$apply();
     });
   }
 
-  onLoad() {
-    //检查用户状态
-    //var loginUser = wx.getStorageSync('loginUser');
-    //if (!loginUser) loginUser = this.$parent.globalData.loginUser;
-    //if (loginUser) this.queryFromServer();
-    //else wx.redirectTo({ url: '/pages/login' }); //重定向到登录页面
+  onReady() {
+    //this.queryBcOverview()
   }
   onShow() {
     // Do something when page show.
@@ -121,6 +103,7 @@ export default class Home extends wepy.page {
       //收到服务器端推送的消息...
       console.log(JSON.stringify(res));
     };
+    this.queryBcOverview()
   }
 }
 </script>
