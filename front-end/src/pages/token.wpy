@@ -52,7 +52,11 @@ export default class Token extends wepy.page {
     inputShowed: false,
     inputVal: ''
   };
-  methods = {};
+  methods = {
+    // inputTyping(e) {
+    //   this.inputVal = e.detail.value
+    // }
+  };
   //Page生命~周期
   onLoad() {
     // Do some initialize when page load.
@@ -97,25 +101,19 @@ export default class Token extends wepy.page {
   }
 
   showInput() {
-    this.setData({
-      inputShowed: true
-    });
+    this.inputShowed = true;
   }
   hideInput() {
-    this.setData({
-      inputVal: '',
-      inputShowed: false
-    });
+    this.inputVal = '';
+    this.inputShowed = false;
   }
   clearInput() {
-    this.setData({
-      inputVal: ''
-    });
+    this.inputVal = '';
   }
   inputTyping(e) {
-    this.setData({
-      inputVal: e.detail.value
-    });
+    this.inputVal = e.detail.value;
+    console.log(e.detail.value);
+    
   }
 }
 </script>
