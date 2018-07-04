@@ -8,7 +8,13 @@ let socketOpen = false; //连接状态
 let socketMsgQueue = []; //消息队列
 export default class extends wepy.app {
   config = {
-    pages: ['pages/home', 'pages/token', 'pages/task', 'pages/me'],
+    pages: [
+      'pages/home',
+      'pages/token',
+      'pages/task',
+      'pages/me',
+      'pages/token/token-detail'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
@@ -123,13 +129,13 @@ export default class extends wepy.app {
     const _this = this;
     var _userInfo = wx.getStorageSync('userInfo');
     if (!_userInfo) {
-      let params = {id:0};
+      let params = { id: 0 };
       SELECT_APP_USER(params).then(res => {
         _this.globalData.userInfo = res;
         //_this.$apply();
-        wx.setStorageSync('userInfo', res)
+        wx.setStorageSync('userInfo', res);
       });
-    } else{
+    } else {
       _this.globalData.userInfo = _userInfo;
     }
   }

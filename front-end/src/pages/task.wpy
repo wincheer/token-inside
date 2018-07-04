@@ -1,7 +1,7 @@
 <template>  
   <view class="container">
     <!-- <ec-canvas ec="{{ ec }}"></ec-canvas> -->
-    <ec-canvas id="mychart-dom-bar" canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>
+    <ec-canvas id="mychart-dom-graph" canvas-id="mychart-graph" ec="{{ ec }}" @tap="foo"></ec-canvas>
   </view>
 </template>  
 
@@ -10,113 +10,132 @@ import wepy from 'wepy';
 import * as echarts from '../assets/ec-canvas/echarts';
 
 const options = {
-  color: ['#37a2da', '#32c5e9', '#67e0e3'],
-  tooltip: {
-    trigger: 'axis',
-    axisPointer: {
-      // 坐标轴指示器，坐标轴触发有效
-      type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-    }
-  },
-  legend: {
-    data: ['热度', '正面', '负面']
-  },
-  grid: {
-    left: 20,
-    right: 20,
-    bottom: 15,
-    top: 40,
-    containLabel: true
-  },
-  xAxis: [
-    {
-      type: 'value',
-      axisLine: {
-        lineStyle: {
-          color: '#999'
-        }
-      },
-      axisLabel: {
-        color: '#666'
-      }
-    }
-  ],
-  yAxis: [
-    {
-      type: 'category',
-      axisTick: { show: false },
-      data: [
-        '汽车之家',
-        '今日头条',
-        '百度贴吧',
-        '一点资讯',
-        '微信',
-        '微博',
-        '知乎'
-      ],
-      axisLine: {
-        lineStyle: {
-          color: '#999'
-        }
-      },
-      axisLabel: {
-        color: '#666'
-      }
-    }
-  ],
+  animationDurationUpdate: 1500,
+  animationEasingUpdate: 'quinticInOut',
   series: [
     {
-      name: '热度',
-      type: 'bar',
-      label: {
-        normal: {
-          show: true,
-          position: 'inside'
-        }
+      type: 'graph',
+      layout: 'force',
+      symbolSize: 50,
+      roam: true,
+      force: {
+        repulsion: 2500, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+        edgeLength: [10, 50] //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
       },
-      data: [300, 270, 340, 344, 300, 320, 310],
-      itemStyle: {
-        // emphasis: {
-        //   color: '#37a2da'
-        // }
-      }
-    },
-    {
-      name: '正面',
-      type: 'bar',
-      stack: '总量',
       label: {
         normal: {
           show: true
         }
       },
-      data: [120, 102, 141, 174, 190, 250, 220],
-      itemStyle: {
-        // emphasis: {
-        //   color: '#32c5e9'
-        // }
-      }
-    },
-    {
-      name: '负面',
-      type: 'bar',
-      stack: '总量',
-      label: {
+      edgeSymbol: ['circle', 'arrow'],
+      edgeSymbolSize: [4, 10],
+      // edgeLabel: {
+      //   normal: {
+      //     textStyle: {
+      //       fontSize: 20
+      //     }
+      //   }
+      // },
+      edgeLabel: {
         normal: {
           show: true,
-          position: 'left'
+          formatter: function(x) {
+            return x.data.name;
+          }
         }
       },
-      data: [-20, -32, -21, -34, -90, -130, -110],
-      itemStyle: {
-        // emphasis: {
-        //   color: '#67e0e3'
-        // }
+      data: [
+        {
+          name: '节点1',
+          // x: 300,
+          // y: 300,
+          itemStyle: {
+            color: '#37A2DA'
+          }
+        },
+        {
+          name: '节点2',
+          // x: 800,
+          // y: 300,
+          itemStyle: {
+            color: '#32C5E9'
+          }
+        },
+        {
+          name: '节点3',
+          // x: 550,
+          // y: 100,
+          itemStyle: {
+            color: '#9FE6B8'
+          }
+        },
+        {
+          name: '节点4',
+          // x: 550,
+          // y: 500,
+          itemStyle: {
+            color: '#FF9F7F'
+          }
+        }
+      ],
+      // links: [],
+      links: [
+        {
+          source: 0,
+          target: 1,
+          symbolSize: [5, 20],
+          label: {
+            normal: {
+              show: true
+            }
+          },
+          lineStyle: {
+            normal: {
+              width: 4,
+              curveness: 0.2
+            }
+          }
+        },
+        {
+          source: '节点2',
+          target: '节点1',
+          label: {
+            normal: {
+              show: true
+            }
+          },
+          lineStyle: {
+            normal: { curveness: 0.2 }
+          }
+        },
+        {
+          source: '节点1',
+          target: '节点3'
+        },
+        {
+          source: '节点2',
+          target: '节点3'
+        },
+        {
+          source: '节点2',
+          target: '节点4'
+        },
+        {
+          source: '节点1',
+          target: '节点4'
+        }
+      ],
+      lineStyle: {
+        normal: {
+          opacity: 0.9,
+          width: 2,
+          curveness: 0
+        }
       }
     }
   ]
 };
-export default class Project extends wepy.page {
+export default class Task extends wepy.page {
   config = {
     navigationBarTitleText: 'ECharts For MP',
     usingComponents: { 'ec-canvas': '../assets/ec-canvas/ec-canvas' }
@@ -124,14 +143,31 @@ export default class Project extends wepy.page {
 
   data = {
     ec: {
-        options: options,
-      }
+      options: options
+    }
   };
 
   methods = {
-  };
+    foo(params) {
+      console.log(params);
+      if (params.componentType === 'series') {
+        if (params.seriesType === 'graph') {
+          if (params.dataType === 'edge') {
+            // 点击到了 graph 的 edge（边）上。
+            console.log('点击到了 graph 的 edge（边）上。');
+          } else {
+            // 点击到了 graph 的 node（节点）上。
+            console.log('点击到了 graph 的 node（节点）上。');
+          }
+        }
+      }
+    }
+  }
 
   onReady() {
+    // this.ec.on('click', function(params) {
+    //   console.log(params);
+    // });
   }
 }
 </script> 

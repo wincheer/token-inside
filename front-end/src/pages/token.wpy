@@ -27,11 +27,14 @@
         <view class="weui-cells weui-cells_after-title">
           <view class="weui-cells weui-cells_after-title">
             <repeat for="{{tokenList}}" key="index" index="index" item="item">
-              <view class="weui-cell">
+              <navigator url="/pages/token/token-detail" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
                   <view class="weui-cell__bd">{{item.tokenName}}</view>
-                  <!-- <icon type="success"/> -->
                   <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-              </view>
+              </navigator>
+              <!-- <view class="weui-cell">
+                  <view class="weui-cell__bd">{{item.tokenName}}</view>
+                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+              </view> -->
             </repeat>
           </view>
       </view>
