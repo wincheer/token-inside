@@ -1,7 +1,7 @@
 <template>  
   <view class="container">
     <!-- <ec-canvas ec="{{ ec }}"></ec-canvas> -->
-    <ec-canvas id="mychart-dom-graph" canvas-id="mychart-graph" ec="{{ ec }}" @tap="foo"></ec-canvas>
+    <ec-canvas id="mychart-dom" canvas-id="mychart" ec="{{ ec }}"></ec-canvas>
   </view>
 </template>  
 
@@ -24,21 +24,14 @@ const options = {
       },
       label: {
         normal: {
-          show: true
+          show: false
         }
       },
-      edgeSymbol: ['circle', 'arrow'],
+      //edgeSymbol: ['circle', 'arrow'],
       edgeSymbolSize: [4, 10],
-      // edgeLabel: {
-      //   normal: {
-      //     textStyle: {
-      //       fontSize: 20
-      //     }
-      //   }
-      // },
       edgeLabel: {
         normal: {
-          show: true,
+          show: false,
           formatter: function(x) {
             return x.data.name;
           }
@@ -86,7 +79,7 @@ const options = {
           symbolSize: [5, 20],
           label: {
             normal: {
-              show: true
+              show: false
             }
           },
           lineStyle: {
@@ -101,7 +94,7 @@ const options = {
           target: '节点1',
           label: {
             normal: {
-              show: true
+              show: false
             }
           },
           lineStyle: {
@@ -143,31 +136,32 @@ export default class Task extends wepy.page {
 
   data = {
     ec: {
-      options: options
+      //options: options
+      lazyLoad: true
     }
   };
 
   methods = {
-    foo(params) {
-      console.log(params);
-      if (params.componentType === 'series') {
-        if (params.seriesType === 'graph') {
-          if (params.dataType === 'edge') {
-            // 点击到了 graph 的 edge（边）上。
-            console.log('点击到了 graph 的 edge（边）上。');
-          } else {
-            // 点击到了 graph 的 node（节点）上。
-            console.log('点击到了 graph 的 node（节点）上。');
-          }
-        }
-      }
-    }
   }
 
   onReady() {
-    // this.ec.on('click', function(params) {
-    //   console.log(params);
-    // });
+    this.$wxpage.selectComponent('#mychart-dom').data.ec.onInit = this.initChart;
+    this.$wxpage.selectComponent('#mychart-dom').init();
+  }
+
+  initChart(canvas, width, height) {
+    const chart = echarts.init(canvas, null, {
+      width: width,
+      height: height
+    });
+    canvas.setChart(chart);
+    chart.setOption(options);
+
+    chart.on('click', function (params) {
+      // 控制台打印数据的名称
+      console.log(params);
+    });
+    return chart;
   }
 }
 </script> 
