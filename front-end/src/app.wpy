@@ -13,7 +13,10 @@ export default class extends wepy.app {
       'pages/token',
       'pages/task',
       'pages/me',
-      'pages/token/token-detail'
+      'pages/token/token-detail',
+      'pages/block/block-list',
+      'pages/block/block-detail',
+      
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -33,17 +36,17 @@ export default class extends wepy.app {
           selectedIconPath: './assets/images/home-s.png'
         },
         {
-          text: '通证',
-          pagePath: 'pages/token',
-          iconPath: './assets/images/token.png',
-          selectedIconPath: './assets/images/token-s.png'
-        },
-        {
-          text: '钱包',
+          text: '交易',
           pagePath: 'pages/task',
           iconPath: './assets/images/task.png',
           selectedIconPath: './assets/images/task-s.png'
         },
+        {
+          text: '通证',
+          pagePath: 'pages/token',
+          iconPath: './assets/images/token.png',
+          selectedIconPath: './assets/images/token-s.png'
+        },        
         {
           text: '我的',
           pagePath: 'pages/me',
