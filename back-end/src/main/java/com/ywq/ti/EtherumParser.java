@@ -34,7 +34,7 @@ public class EtherumParser {
 	@Autowired
 	private EthBcService service;
 	
-	@Scheduled(fixedDelay = 10 * 1000)
+	//@Scheduled(fixedDelay = 10 * 1000)
 	public void parseBlock() throws Exception{
 		
 		Web3jConfig web3jConfig = new Web3jConfig();

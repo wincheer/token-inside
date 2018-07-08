@@ -1,0 +1,129 @@
+<template>
+  <view class="page">
+    <view class="page__hd">
+        <form bindsubmit="formSubmit">
+          <input placeholder="输入钱包地址" name="searchKey" />
+          <button formType="submit" class='head-button'>搜索</button>
+        </form>
+    </view>
+    <view class="page__bd page__bd_spacing">
+        <view class="weui-tab">
+            <view class="weui-navbar">
+                <block wx:for="{{tabs}}" wx:key="*this">
+                    <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
+                        <view class="weui-navbar__title">{{item}}</view>
+                    </view>
+                </block>
+                <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
+            </view>
+            <view class="weui-tab__panel" >
+                <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
+                  <block wx:if="{{wallet != ''}}">
+                    <view class="weui-panel__hd">标签：</view>
+                    <navigator url="" >
+                      <view class="weui-cell__ft weui-cell__ft_in-access">添加标签</view>
+                    </navigator>   
+                    <!-- <block wx:if="{{index != -1}}"><block>   -->
+                    <view class="weui-btn-area">
+                      <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
+                          <button type="default">选择 Token</button>
+                      </picker>                    
+                    </view>
+                    <view class="weui-panel__hd">Token：</view>
+                    <view class="weui-panel__hd">余额：</view>    
+                  </block>
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+                  选项二的内容 ETH + ERC20 交易
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
+                  选项三的内容
+                </view>
+                <view class="weui-tab__content" hidden="{{activeIndex != 3}}">
+                  选项四的内容
+                </view>
+            </view>
+        </view>
+
+        <!-- <view class="weui-cells__title">钱包信息 列表</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cells weui-cells_after-title">
+            <repeat for="{{tokenList}}" key="index" index="index" item="item">
+              <navigator url="/pages/token/token-detail" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                  <view class="weui-cell__bd">{{item.tokenName}}</view>
+                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+              </navigator>
+            </repeat>
+          </view>
+      </view> -->
+    </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class Wallet extends wepy.page {
+  config = {
+    navigationBarTitleText: 'TokenInside - 钱包'
+  };
+  data = {
+    tabs: ['基本信息', '交易','Token交易', '关联钱包'],
+    activeIndex: 0,
+    sliderOffset: 0,
+    sliderLeft: 0,
+
+    array: ['美国', '中国', '巴西', '日本'],
+    index: -1,
+
+    wallet:'',
+    balanceOf: {},
+    txList: []
+  };
+  methods = {};
+  tabClick(e) {
+    (this.sliderOffset = e.currentTarget.offsetLeft),
+      (this.activeIndex = e.currentTarget.id);
+  }
+  bindPickerChange(e) {
+    console.log('picker发送选择改变，携带值为', e.detail.value);
+    this.index = e.detail.value;
+  }
+  addTag(){
+    console.log("添加标签");
+    wx.na
+  }
+  //Page生命~周期
+  onLoad() {
+    // Do some initialize when page load.
+  }
+  onReady() {
+    //queryTokenListPage();
+  }
+  onShow() {
+    // Do something when page show.
+  }
+  onHide() {
+    // Do something when page hide.
+  }
+  onUnload() {
+    // Do something when page close.
+  }
+
+  /**
+   * 页面上拉触底事件的处理函数
+   */
+  onReachBottom() {}
+}
+</script>
+
+<style lang="less">
+.placeholder {
+  margin: 5px;
+  padding: 0 10px;
+  text-align: center;
+  background-color: #ebebeb;
+  height: 2.3em;
+  line-height: 2.3em;
+  color: #cfcfcf;
+}
+</style>

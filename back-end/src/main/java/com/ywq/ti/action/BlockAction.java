@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.TextMessage;
 
+import com.ywq.ti.entity.BcBlock;
 import com.ywq.ti.entity.BcErc20Token;
+import com.ywq.ti.entity.BcErc20Transaction;
+import com.ywq.ti.entity.BcTransaction;
 import com.ywq.ti.service.BlockService;
 import com.ywq.ti.socket.SpringWebSocketHandler;
 
@@ -55,5 +58,51 @@ public class BlockAction {
 
 		return result;
 	}
+	
+	@RequestMapping(value = "/selectBlockListPage", method = RequestMethod.POST)
+	public Map<String,Object> selectBlockListPage(@RequestBody Map<String, Object> queryParam) {
+		
+		long total = service.totalBlocks(queryParam);
+		List<BcBlock> rows = service.selectBlockListPage(queryParam);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		long pageSize = Long.valueOf(queryParam.get("pageSize").toString()) ;
+		long totalPages = (total + pageSize -1)/pageSize;
+		result.put("totalPages", totalPages);
+		result.put("rows", rows);
+
+		return result;
+	}
+	
+	@RequestMapping(value = "/selectTxListPage", method = RequestMethod.POST)
+	public Map<String,Object> selectTxListPage(@RequestBody Map<String, Object> queryParam) {
+		
+		long total = service.totalTxs(queryParam);
+		List<BcTransaction> rows = service.selectTxListPage(queryParam);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		long pageSize = Long.valueOf(queryParam.get("pageSize").toString()) ;
+		long totalPages = (total + pageSize -1)/pageSize;
+		result.put("totalPages", totalPages);
+		result.put("rows", rows);
+
+		return result;
+	}
+	
+	@RequestMapping(value = "/selectBlockTxListPage", method = RequestMethod.POST)
+	public Map<String,Object> selectBlockTxListPage(@RequestBody Map<String, Object> queryParam) {
+		
+		long total = service.totalBlockTxs(queryParam);
+		List<BcErc20Transaction> rows = service.selectBlockTxListPage(queryParam);
+		
+		Map<String, Object> result = new HashMap<String, Object>();
+		long pageSize = Long.valueOf(queryParam.get("pageSize").toString()) ;
+		long totalPages = (total + pageSize -1)/pageSize;
+		result.put("totalPages", totalPages);
+		result.put("rows", rows);
+
+		return result;
+	}
+	
 
 }

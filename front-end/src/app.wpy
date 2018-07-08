@@ -11,6 +11,7 @@ export default class extends wepy.app {
     pages: [
       'pages/home',
       'pages/token',
+      'pages/wallet',
       'pages/task',
       'pages/me',
       'pages/token/token-detail',
@@ -41,12 +42,12 @@ export default class extends wepy.app {
           iconPath: './assets/images/task.png',
           selectedIconPath: './assets/images/task-s.png'
         },
-        {
-          text: '通证',
-          pagePath: 'pages/token',
-          iconPath: './assets/images/token.png',
-          selectedIconPath: './assets/images/token-s.png'
-        },        
+        // {
+        //   text: '通证',
+        //   pagePath: 'pages/token',
+        //   iconPath: './assets/images/token.png',
+        //   selectedIconPath: './assets/images/token-s.png'
+        // },        
         {
           text: '我的',
           pagePath: 'pages/me',

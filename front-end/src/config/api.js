@@ -7,3 +7,6 @@ export const LOGIN = (params) => { return wepy.request({ method: 'POST', url: `$
 export const SELECT_APP_USER = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectAppUser`, data: params }).then(res => res.data); };
 export const BC_OVERVIEW = () => { return wepy.request({ method: 'POST', url: `${HOST}/bcOverview`}).then(res => res.data); };
 export const SELECT_TOKEN_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectTokenListPage`, data: params }).then(res => res.data); };
+export const SELECT_BLOCK_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectBlockListPage`, data: params }).then(res => res.data); };
+export const SELECT_TX_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectTxListPage`, data: params }).then(res => res.data); };
+export const SELECT_BLOCK_TX_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectBlockTxListPage`, data: params }).then(res => res.data); };

@@ -2,28 +2,12 @@
   <view class="page">
     <view class="page__hd">
         <form bindsubmit="formSubmit">
-          <input placeholder="输入 Token 短名称，如 LAB" name="searchKey" />
+          <input placeholder="输入Token短名称，如 LAB" name="searchKey" />
           <button formType="submit" class='head-button'>搜索</button>
         </form>
     </view>
     <view class="page__bd page__bd_spacing">
-        <view class="weui-tab">
-            <view class="weui-navbar">
-                <block wx:for="{{tabs}}" wx:key="*this">
-                    <view id="{{index}}" class="weui-navbar__item {{activeIndex == index ? 'weui-bar__item_on' : ''}}" bindtap="tabClick">
-                        <view class="weui-navbar__title">{{item}}</view>
-                    </view>
-                </block>
-                <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
-            </view>
-            <view class="weui-tab__panel">
-                <view class="weui-tab__content" hidden="{{activeIndex != 0}}">选项一的内容</view>
-                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">选项二的内容</view>
-                <view class="weui-tab__content" hidden="{{activeIndex != 2}}">选项三的内容</view>
-            </view>
-        </view>
-
-        <!-- <view class="weui-cells__title">Token 列表</view>
+        <view class="weui-cells__title">Token 列表</view>
         <view class="weui-cells weui-cells_after-title">
           <view class="weui-cells weui-cells_after-title">
             <repeat for="{{tokenList}}" key="index" index="index" item="item">
@@ -31,33 +15,35 @@
                   <view class="weui-cell__bd">{{item.tokenName}}</view>
                   <view class="weui-cell__ft weui-cell__ft_in-access"></view>
               </navigator>
+              <!-- <view class="weui-cell">
+                  <view class="weui-cell__bd">{{item.tokenName}}</view>
+                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+              </view> -->
             </repeat>
           </view>
-      </view> -->
+      </view>
     </view>
 </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import { SELECT_TOKEN_LIST_PAGE } from '@/config/api.js';
 export default class Token extends wepy.page {
-  config = {
-    navigationBarTitleText: 'TokenInside - Token'
-  };
-
   data = {
-    tabs: ["基本信息", "交易", "图表"],
-    activeIndex: 0,
-    sliderOffset: 0,
-    sliderLeft: 0
+    pageNo: 1,
+    pageSize: 20,
+    totalPages: 1,
+    hasMoreData: true,
+    tokenList: [],
+    inputShowed: false,
+    inputVal: ''
   };
   methods = {
-
+    // inputTyping(e) {
+    //   this.inputVal = e.detail.value
+    // }
   };
-  tabClick(e) {
-      this.sliderOffset = e.currentTarget.offsetLeft,
-      this.activeIndex = e.currentTarget.id
-  }
   //Page生命~周期
   onLoad() {
     // Do some initialize when page load.
@@ -67,6 +53,7 @@ export default class Token extends wepy.page {
   }
   onShow() {
     // Do something when page show.
+    this.queryTokenListPage();
   }
   onHide() {
     // Do something when page hide.
@@ -79,10 +66,42 @@ export default class Token extends wepy.page {
    * 页面上拉触底事件的处理函数
    */
   onReachBottom() {
-    
+    this.queryTokenListPage();
   }
 
+  queryTokenListPage() {
+    var _this = this;
+    let params = {
+      pageNo: _this.pageNo,
+      pageSize: _this.pageSize
+    };
+    SELECT_TOKEN_LIST_PAGE(params).then(res => {
+      _this.totalPages = res.totalPages;
+      if (_this.pageNo < _this.totalPages) {
+        _this.pageNo = _this.pageNo + 1;
+        _this.tokenList = _this.tokenList.concat(res.rows);
+      } else {
+        if (_this.tokenList.length == 0) _this.tokenList = res.rows;
+      }
+      _this.$apply();
+    });
+  }
 
+  showInput() {
+    this.inputShowed = true;
+  }
+  hideInput() {
+    this.inputVal = '';
+    this.inputShowed = false;
+  }
+  clearInput() {
+    this.inputVal = '';
+  }
+  inputTyping(e) {
+    this.inputVal = e.detail.value;
+    console.log(e.detail.value);
+    
+  }
 }
 </script>
 

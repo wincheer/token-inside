@@ -1,57 +1,32 @@
 <template>
   <view class="page">
     <view class="page__hd">
-        <view class="page__title">Preview</view>
-        <view class="page__desc">表单预览</view>
+        <view class="page__title">区块：{{block.number}}</view>
+        <view class="page__desc">Hash：{{block.hash}}</view>
     </view>
     <view class="page__bd">
         <view class="weui-form-preview">
-            <view class="weui-form-preview__hd">
-                <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">付款金额</view>
-                    <view class="weui-form-preview__value_in-hd">¥2400.00</view>
-                </view>
-            </view>
             <view class="weui-form-preview__bd">
                 <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">商品</view>
-                    <view class="weui-form-preview__value">电动打蛋机</view>
+                    <view class="weui-form-preview__label">矿工</view>
+                    <view class="weui-form-preview__value">{{block.coinbase}}</view>
                 </view>
                 <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">标题标题</view>
-                    <view class="weui-form-preview__value">名字名字名字</view>
+                    <view class="weui-form-preview__label">难度</view>
+                    <view class="weui-form-preview__value">{{block.difficulty}}</view>
                 </view>
                 <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">标题标题</view>
-                    <view class="weui-form-preview__value">很长很长的名字很长很长的名字很长很长的名字很长很长的名字很长很长的名字</view>
-                </view>
-            </view>
-            <view class="weui-form-preview__ft">
-                <navigator url="" class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active">操作</navigator>
-            </view>
-        </view>
-        <view class="weui-form-preview">
-            <view class="weui-form-preview__hd">
-                <view class="weui-form-preview__label">付款金额</view>
-                <view class="weui-form-preview__value_in-hd">¥2400.00</view>
-            </view>
-            <view class="weui-form-preview__bd">
-                <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">商品</view>
-                    <view class="weui-form-preview__value">电动打蛋机</view>
+                    <view class="weui-form-preview__label">gasLimit</view>
+                    <view class="weui-form-preview__value">{{block.gasLimit}}</view>
                 </view>
                 <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">标题标题</view>
-                    <view class="weui-form-preview__value">名字名字名字</view>
+                    <view class="weui-form-preview__label">gasUsed</view>
+                    <view class="weui-form-preview__value">{{block.gasUsed}}</view>
                 </view>
                 <view class="weui-form-preview__item">
-                    <view class="weui-form-preview__label">标题标题</view>
-                    <view class="weui-form-preview__value">很长很长的名字很长很长的名字很长很长的名字很长很长的名字很长很长的名字</view>
+                    <view class="weui-form-preview__label">生成时间</view>
+                    <view class="weui-form-preview__value">{{block.timestamp}}</view>
                 </view>
-            </view>
-            <view class="weui-form-preview__ft">
-                <navigator class="weui-form-preview__btn weui-form-preview__btn_default" hover-class="weui-form-preview__btn_active">辅助操作</navigator>
-                <navigator class="weui-form-preview__btn weui-form-preview__btn_primary" hover-class="weui-form-preview__btn_active">操作</navigator>
             </view>
         </view>
     </view>
@@ -61,11 +36,17 @@
 <script>
 import wepy from 'wepy';
 export default class BlockDetail extends wepy.page {
-  data = {};
+  data = {
+      block:{}
+  };
   methods = {};
   //Page生命~周期
-  onLoad() {
+  onLoad(options) {
     // Do some initialize when page load.
+    this.block = options;
+    this.block.coinbase = options.coinbase.substr(0,10) + "..." + options.coinbase.substr(32)
+    this.block.hash = options.hash.substr(0,10) + "..." + options.hash.substr(50)
+    this.block.timestamp = new Date(Number(options.timestamp));
   }
   onReady() {
     // Do something when page ready.

@@ -36,6 +36,7 @@
     select count(*) from bc_block
     where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="hash != null">hash = #{hash,jdbcType=VARCHAR} and </if>
       <if test="number != null">number = #{number,jdbcType=BIGINT} and </if>
       <if test="parentHash != null">parent_hash = #{parentHash,jdbcType=VARCHAR} and </if>
       <if test="coinbase != null">coinbase = #{coinbase,jdbcType=VARCHAR} and </if>
@@ -50,6 +51,7 @@
     select * from bc_block
     where 1=1
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="hash != null">hash = #{hash,jdbcType=VARCHAR} and </if>
       <if test="number != null">number = #{number,jdbcType=BIGINT} and </if>
       <if test="parentHash != null">parent_hash = #{parentHash,jdbcType=VARCHAR} and </if>
       <if test="coinbase != null">coinbase = #{coinbase,jdbcType=VARCHAR} and </if>
@@ -58,6 +60,7 @@
       <if test="gasUsed != null">gas_used = #{gasUsed,jdbcType=INTEGER} and </if>
       <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
 	</trim>
+	order by id desc
 	limit #{start},#{pageSize}
   </select>
 
