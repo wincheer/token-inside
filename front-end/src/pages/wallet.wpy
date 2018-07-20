@@ -1,12 +1,17 @@
 <template>
   <view class="page">
     <view class="page__hd">
-        <form bindsubmit="formSubmit">
-          <input placeholder="输入钱包地址" name="searchKey" />
-          <button formType="submit" class='head-button'>搜索</button>
-        </form>
+        <input placeholder="输入钱包地址" confirm-type="search" bindconfirm="searchBtn" focus='ture'/>
     </view>
     <view class="page__bd page__bd_spacing">
+        <view class="weui-cells__title">标签钱包</view>
+        <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__bd">
+                <repeat for="{{myWallets}}" key="index" index="index" item="item">
+                  <view class="weui-panel__hd" bindtap="choseWallet" id="{{item.address}}">{{item.tag}}</view>
+                </repeat>
+            </view>
+        </view>
         <view class="weui-tab">
             <view class="weui-navbar">
                 <block wx:for="{{tabs}}" wx:key="*this">
@@ -18,79 +23,168 @@
             </view>
             <view class="weui-tab__panel" >
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
-                  <block wx:if="{{wallet != ''}}">
-                    <view class="weui-panel__hd">标签：</view>
-                    <navigator url="" >
-                      <view class="weui-cell__ft weui-cell__ft_in-access">添加标签</view>
-                    </navigator>   
-                    <!-- <block wx:if="{{index != -1}}"><block>   -->
+                  <block wx:if="{{balanceOfEth != -1}}">  
+                    <view class="weui-cell">
+                      <view class="weui-cell__bd">Token名称</view>
+                      <view class="weui-cell__ft">{{token}}</view>
+                    </view>
+                    <view class="weui-cell">
+                      <view class="weui-cell__bd">余额</view>
+                      <view class="weui-cell__ft">{{balanceOfEth}}</view>
+                    </view>
                     <view class="weui-btn-area">
-                      <picker bindchange="bindPickerChange" value="{{index}}" range="{{array}}">
-                          <button type="default">选择 Token</button>
+                      <picker bindchange="queryBalance" range="{{myTokens}}" range-key="tokenName">
+                          <button type="default">其它Token余额</button>
                       </picker>                    
                     </view>
-                    <view class="weui-panel__hd">Token：</view>
-                    <view class="weui-panel__hd">余额：</view>    
+                    <view bindtap="goWalletTag" class="weui-cell__ft weui-cell__ft_in-access">给钱包打标签</view>
                   </block>
                 </view>
+
                 <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
-                  选项二的内容 ETH + ERC20 交易
+                    <repeat for="{{txList}}" key="index" index="index" item="item">
+                      <view class="weui-media-box weui-media-box_text" bindtap="showTx" id="{{item.hash}}">
+                        <view class="weui-media-box__title weui-media-box__title_in-text" bindtap="showTx" id="{{item.hash}}">{{item.timestamp}}</view>
+                        <view class="weui-media-box__desc" bindtap="showTx" id="{{item.hash}}">{{item.value}} ({{item.symbol}})</view>
+                      </view>
+                    </repeat>
                 </view>
+
                 <view class="weui-tab__content" hidden="{{activeIndex != 2}}">
-                  选项三的内容
-                </view>
-                <view class="weui-tab__content" hidden="{{activeIndex != 3}}">
-                  选项四的内容
+                  <repeat for="{{tokenTxList}}" key="index" index="index" item="item">
+                    <view class="weui-media-box weui-media-box_text" bindtap="showTx" id="{{item.hash}}">
+                      <view class="weui-media-box__title weui-media-box__title_in-text" bindtap="showTx" id="{{item.hash}}">{{item.timestamp}}</view>
+                      <view class="weui-media-box__desc" bindtap="showTx" id="{{item.hash}}">{{item.value}} ({{item.symbol}})</view>
+                    </view>
+                  </repeat>
                 </view>
             </view>
         </view>
-
-        <!-- <view class="weui-cells__title">钱包信息 列表</view>
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cells weui-cells_after-title">
-            <repeat for="{{tokenList}}" key="index" index="index" item="item">
-              <navigator url="/pages/token/token-detail" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-                  <view class="weui-cell__bd">{{item.tokenName}}</view>
-                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-              </navigator>
-            </repeat>
-          </view>
-      </view> -->
     </view>
 </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import { SELECT_WALLET_INFO } from '@/config/api.js';
+import formatTime from '@/utils/timeFormatter.js';
 export default class Wallet extends wepy.page {
   config = {
-    navigationBarTitleText: 'TokenInside - 钱包'
+    navigationBarTitleText: 'TokenInside - 钱包',
   };
   data = {
-    tabs: ['基本信息', '交易','Token交易', '关联钱包'],
+    tabs: ['基本信息', '交易', 'Token交易'],
     activeIndex: 0,
     sliderOffset: 0,
     sliderLeft: 0,
 
-    array: ['美国', '中国', '巴西', '日本'],
-    index: -1,
+    myWallets: [],
+    myTokens: [],
 
-    wallet:'',
+    token: 'ETH',
+    wallet_address: '',
     balanceOf: {},
-    txList: []
+    balanceOfEth: -1,
+    txList: [],
+    tokenTxList: []
   };
   methods = {};
   tabClick(e) {
     (this.sliderOffset = e.currentTarget.offsetLeft),
       (this.activeIndex = e.currentTarget.id);
   }
-  bindPickerChange(e) {
-    console.log('picker发送选择改变，携带值为', e.detail.value);
-    this.index = e.detail.value;
+  queryBalance(e) {
+    var myTokenAddress = this.myTokens[e.detail.value].tokenAddress;
+    console.log(myTokenAddress);
   }
-  addTag(){
-    console.log("添加标签");
-    wx.na
+  addTag() {
+    console.log('添加标签');
+    wx.na;
+  }
+  searchBtn(e) {
+    //检查钱包地址的合法性 0x开头，长度42
+    if (e.detail.value.substr(0, 2) === '0x' && e.detail.value.length === 42) {
+      this.selectWalletInfo(e.detail.value);
+      //this.wallet_address = e.detail.value;
+    } else {
+      wx.showToast({ title: '钱包地址不合格', icon: 'none', duration: 2000 });
+      //this.wallet_address = '';
+    }
+  }
+  selectWalletInfo(wallet_address) {
+    this.wallet_address = wallet_address;
+    wx.showToast({
+      title: '加载中',
+      icon: 'loading',
+      duration: 10000 //10秒
+    });
+    var _this = this;
+    let params = {
+      wallet_address: wallet_address
+    };
+    SELECT_WALLET_INFO(params).then(res => {
+      wx.hideToast();
+      _this.balanceOfEth = res.balanceOfEth;
+      _this.txList = res.txList;
+      _this.tokenTxList = res.tokenTxList;
+      for (var tx of _this.tokenTxList) {
+        tx.timestamp = formatTime.formatTime(
+          Number(tx.timestamp),
+          'Y-M-D h:m:s'
+        );
+      }
+      for (var tx of _this.txList) {
+        tx.timestamp = formatTime.formatTime(
+          Number(tx.timestamp),
+          'Y-M-D h:m:s'
+        );
+      }
+      _this.$apply();
+    });
+  }
+  choseWallet(e) {
+    this.selectWalletInfo(e.target.id);
+  }
+  goWalletTag(e) {
+    //前往打标签
+    var tag = '';
+    for (var _wallet of this.myWallets) {
+      if (_wallet.address === this.wallet_address) {
+        tag = _wallet.tag;
+        break;
+      }
+    }
+    wx.navigateTo({
+      url: '/pages/wallet-tag?address=' + this.wallet_address + '&tag=' + tag
+    });
+  }
+  showTx(e) {
+    var selectedTx;
+    for (var tx of this.tokenTxList) {
+      if (tx.hash === e.target.id) {
+        selectedTx = tx;
+        break;
+      }
+    }
+    for (var tx of this.txList) {
+      if (tx.hash === e.target.id) {
+        selectedTx = tx;
+        break;
+      }
+    }
+    wx.navigateTo({
+      url:
+        '/pages/tx-detail?token=' +
+        selectedTx.symbol +
+        '&from=' +
+        selectedTx.from +
+        '&to=' +
+        selectedTx.to +
+        '&value=' +
+        selectedTx.value +
+        '&datetime=' +
+        selectedTx.timestamp
+    });
   }
   //Page生命~周期
   onLoad() {
@@ -100,7 +194,9 @@ export default class Wallet extends wepy.page {
     //queryTokenListPage();
   }
   onShow() {
-    // Do something when page show.
+    // 客户端 Wallet结构为{address:xxx,tag:yyy}
+    this.myTokens = this.$parent.globalData.myTokens;
+    this.myWallets = this.$parent.globalData.myWallets;
   }
   onHide() {
     // Do something when page hide.

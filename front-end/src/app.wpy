@@ -12,57 +12,24 @@ export default class extends wepy.app {
       'pages/home',
       'pages/token',
       'pages/wallet',
-      'pages/task',
-      'pages/me',
-      'pages/token/token-detail',
-      'pages/block/block-list',
-      'pages/block/block-detail',
-      
+      'pages/tx-detail',
+      'pages/wallet-tag',
+      'pages/graph'
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'Token Inside',
       navigationBarTextStyle: 'black',
-      enablePullDownRefresh: true
-    },
-    tabBar: {
-      selectedColor: '#7EC0EE',
-      borderStyle: 'white',
-      list: [
-        {
-          text: '首页',
-          pagePath: 'pages/home',
-          iconPath: './assets/images/home.png',
-          selectedIconPath: './assets/images/home-s.png'
-        },
-        {
-          text: '交易',
-          pagePath: 'pages/task',
-          iconPath: './assets/images/task.png',
-          selectedIconPath: './assets/images/task-s.png'
-        },
-        // {
-        //   text: '通证',
-        //   pagePath: 'pages/token',
-        //   iconPath: './assets/images/token.png',
-        //   selectedIconPath: './assets/images/token-s.png'
-        // },        
-        {
-          text: '我的',
-          pagePath: 'pages/me',
-          iconPath: './assets/images/me.png',
-          selectedIconPath: './assets/images/me-s.png'
-        }
-      ]
+      // enablePullDownRefresh: true
     }
   };
 
   globalData = {
     userInfo: null, //微信用户信息
-    loginUser: null, //登录用户
-    socketTask: {}, //全局socket连接对象
-    callback: function() {} //全局接收到服务器消息事件
+
+    myTokens:[], //我关注的token
+    myWallets:[] //我关注的钱包地址
   };
 
   constructor() {
@@ -74,58 +41,7 @@ export default class extends wepy.app {
   //APP生命周期
   onLaunch() {
     this.getUserInfo();
-  }
-  initSocket() {
-    var _this = this;
-    //建立连接
-    _this.globalData.socketTask = wx.connectSocket({
-      url: 'ws://localhost:8080/socket?user_id=' + _this.globalData.userInfo.id
-    });
-    //连接成功
-    _this.globalData.socketTask.onOpen(function(res) {
-      console.log('WebSocket连接已打开！');
-      socketOpen = true;
-      for (var i = 0; i < socketMsgQueue.length; i++) {
-        _this.sendSocketMessage(socketMsgQueue[i]);
-      }
-      socketMsgQueue = [];
-    });
-    //连接失败
-    _this.globalData.socketTask.onError(function(res) {
-      socketOpen = false;
-      console.log('websocket连接失败！');
-    });
-    //接收到服务器端消息
-    _this.globalData.socketTask.onMessage(function(res) {
-      console.log('收到服务器内容：' + JSON.stringify(res));
-      _this.globalData.callback(res);
-    });
-    _this.globalData.socketTask.onClose(function(res) {
-      socketOpen = false;
-      console.log('WebSocket连接已关闭');
-      _this.initSocket();
-    });
-  }
-
-  sendSocketMessage(msg) {
-    if (socketOpen) {
-      this.globalData.socketTask.send({
-        data: msg
-      });
-    } else {
-      socketMsgQueue.push(msg);
-    }
-  }
-  onShow() {
-    // Do something when show.
-    //this.initSocket();
-    if (!socketOpen) {
-      console.log('开始尝试连接WebSocket！');
-      this.initSocket();
-    }
-  }
-  onHide() {
-    // Do something when hide.
+    this.initEthereum();
   }
 
   getUserInfo() {
@@ -141,6 +57,25 @@ export default class extends wepy.app {
       });
     } else {
       _this.globalData.userInfo = _userInfo;
+    }
+  }
+
+  initEthereum(){
+    //初始化我关注的钱包和Token
+    var _this = this;
+    //代币
+    var myTokens = wx.getStorageSync('myTokens');
+    if(!myTokens){
+      wx.setStorageSync('myTokens', []);
+    } else {
+      _this.globalData.myTokens = myTokens;
+    }
+    //钱包
+    var myWallets = wx.getStorageSync('myWallets');
+    if(!myWallets){
+      wx.setStorageSync('myWallets', []);
+    } else {
+      _this.globalData.myWallets = myWallets;
     }
   }
 }

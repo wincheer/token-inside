@@ -1,0 +1,112 @@
+<template>  
+  <view class="container">
+    <ec-canvas id="mychart-dom" canvas-id="mychart" ec="{{ ec }}"></ec-canvas>
+  </view>
+</template>  
+
+<script>
+import wepy from 'wepy';
+import * as echarts from '@/assets/ec-canvas/echarts';
+import { SELECT_GRAPH_INFO } from '@/config/api.js';
+
+var wallet_address = '';
+export default class Graph extends wepy.page {
+  config = {
+    navigationBarTitleText: '关联交易',
+    usingComponents: { 'ec-canvas': '../assets/ec-canvas/ec-canvas' }
+  };
+
+  data = {
+    // wallet_address:'',
+    ec: {
+      lazyLoad: true
+    }
+  };
+
+  methods = {};
+
+  onReady() {
+    this.$wxpage.selectComponent(
+      '#mychart-dom'
+    ).data.ec.onInit = this.initChart;
+    this.$wxpage.selectComponent('#mychart-dom').init();
+  }
+  onLoad(options) {
+    //console.log(options) //接收从交易传递过来的参数
+    wallet_address = options.wallet;
+  }
+
+  initChart(canvas, width, height) {
+    var _this = this.parent;
+    const chart = echarts.init(canvas, null, {
+      width: width,
+      height: height
+    });
+    canvas.setChart(chart);
+    //chart.setOption(options);
+    let params = {
+      wallet_address: wallet_address
+    };
+    SELECT_GRAPH_INFO(params).then(res => {
+      // console.log(res);
+      chart.setOption({
+        // animationDurationUpdate: 1500,
+        // animationEasingUpdate: 'quinticInOut',
+        series: [
+          {
+            type: 'graph',
+            layout: 'force',
+            symbolSize: 15,
+            //symbolSize: (amount, params) => {return amount;}, //根据交易金额来控制大小，考虑到大小差异过大，可以尝试log函数来处理一下
+            roam: true,
+            // draggable:true,
+            // focusNodeAdjacency: true,
+            force: {
+              repulsion: 1500, //节点之间的斥力因子。支持数组表达斥力范围，值越大斥力越大。
+              edgeLength: [10, 50], //边的两个节点之间的距离，这个距离也会受 repulsion。[10, 50] 。值越小则长度越长
+              gravity:0.1
+            },
+            label: {
+              normal: {
+                show: false
+              }
+            },
+            edgeSymbol: ['circle', 'arrow'],
+            edgeSymbolSize: [6, 6],
+            edgeLabel: {
+              normal: {
+                show: true,
+                formatter: function(x) {
+                  return Number(x.data.value).toFixed(2) + '('+ x.data.token +')';
+                }
+              }
+            },
+            data: res.nodes,
+            links: res.edges,
+            lineStyle: {
+              normal: {
+                opacity: 0.7,
+                width: 0.7,
+                curveness: 0.2
+              }
+            }
+          }
+        ]
+      });
+    });
+
+    chart.on('click', function(params) {
+      // 控制台打印数据的名称
+      console.log(params);
+    });
+    return chart;
+  }
+}
+</script> 
+
+<style lang="less">
+ec-canvas {
+  width: 100%;
+  height: 100%;
+}
+</style>

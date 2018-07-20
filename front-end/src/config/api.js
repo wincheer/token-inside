@@ -1,12 +1,10 @@
 import wepy from 'wepy';
 
 // 服务器地址
-const HOST = 'http://localhost:8080';
+const HOST = 'https://ti.commercelabcn.com/';
 // Restful 接口
-export const LOGIN = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/login`, data: params }).then(res => res.data); };
 export const SELECT_APP_USER = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectAppUser`, data: params }).then(res => res.data); };
-export const BC_OVERVIEW = () => { return wepy.request({ method: 'POST', url: `${HOST}/bcOverview`}).then(res => res.data); };
-export const SELECT_TOKEN_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectTokenListPage`, data: params }).then(res => res.data); };
-export const SELECT_BLOCK_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectBlockListPage`, data: params }).then(res => res.data); };
-export const SELECT_TX_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectTxListPage`, data: params }).then(res => res.data); };
-export const SELECT_BLOCK_TX_LIST_PAGE = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectBlockTxListPage`, data: params }).then(res => res.data); };
+
+export const SELECT_TOKEN_INFO = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectTokenInfo`, data: params }).then(res => res.data); };
+export const SELECT_WALLET_INFO = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectWalletInfo`, data: params }).then(res => res.data); };
+export const SELECT_GRAPH_INFO = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectGraphInfo`, data: params }).then(res => res.data); };

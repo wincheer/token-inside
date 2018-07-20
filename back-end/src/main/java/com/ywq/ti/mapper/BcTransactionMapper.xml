@@ -73,6 +73,34 @@
 	limit #{start},#{pageSize}
   </select>
   
+  <select id="selectTransactionListPageRaw" parameterType="java.util.Map" resultType="java.util.Map">
+    SELECT
+		bc_transaction.hash,
+		'ETH' AS `name`,
+		'ETH' AS symbol,
+		18 AS decimals,
+		bc_transaction.send_address AS `from`,
+		bc_transaction.receive_address AS `to`,
+		bc_transaction.`value`,
+		bc_transaction.`timestamp`
+	FROM
+		bc_transaction
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="blockHash != null">block_hash = #{blockHash,jdbcType=VARCHAR} and </if>
+      <if test="blockNumber != null">block_number = #{blockNumber,jdbcType=BIGINT} and </if>
+      <if test="gas != null">gas = #{gas,jdbcType=BIGINT} and </if>
+      <if test="gasPrice != null">gas_price = #{gasPrice,jdbcType=BIGINT} and </if>
+      <if test="sendAddress != null">send_address = #{sendAddress,jdbcType=VARCHAR} and </if>
+      <if test="receiveAddress != null">receive_address = #{receiveAddress,jdbcType=VARCHAR} and </if>
+      <if test="value != null">value = #{value,jdbcType=BIGINT} and </if>
+      <if test="data != null">data = #{data,jdbcType=VARCHAR} and </if>
+      <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
+      <if test="txType != null">tx_type = #{txType,jdbcType=VARCHAR} and </if>
+	</trim>
+	limit #{start},#{pageSize}
+  </select>
+  
   <select id="selectMaxTransaction" resultType="java.lang.Long">
     SELECT ifnull( max(id), 0) FROM bc_transaction;
   </select>

@@ -14,6 +14,7 @@ public interface BcErc20TransactionMapper {
 	Long totalErc20Transactions(Map<String,Object> param);
 	
 	List<BcErc20Transaction> selectErc20TransactionListPage(Map<String, Object> map);
+	List<Map<String, Object>> selectErc20TransactionListPageRaw(Map<String, Object> map); //
 	
 	Long selectMaxErc20Transaction();
 

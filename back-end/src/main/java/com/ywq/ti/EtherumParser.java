@@ -34,12 +34,11 @@ public class EtherumParser {
 	@Autowired
 	private EthBcService service;
 	
-	//@Scheduled(fixedDelay = 10 * 1000)
+	@Scheduled(fixedDelay = 10 * 1000)
 	public void parseBlock() throws Exception{
 		
 		Web3jConfig web3jConfig = new Web3jConfig();
 		Web3j web3j = Web3j.build(web3jConfig.buildService(WEB3_CLIENT_URL));
-		//Web3j web3j = Web3j.build(new WindowsIpcService("\\\\.\\pipe\\geth.ipc")); //IPC
 		
 		Set<String> tokenSet = service.allTokens();
 		Set<String> contractSet = service.allContracts();

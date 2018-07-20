@@ -66,6 +66,36 @@
       <if test="value != null">value = #{value,jdbcType=VARCHAR} and </if>
       <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
 	</trim>
+	ORDER BY bc_erc20_transaction.id DESC
+	limit #{start},#{pageSize}
+  </select>
+  
+  <select id="selectErc20TransactionListPageRaw" parameterType="java.util.Map" resultType="java.util.Map">
+	SELECT
+		bc_erc20_transaction.tx_hash AS `hash`,
+		bc_erc20_token.token_name AS `name`,
+		bc_erc20_token.symbol,
+		bc_erc20_token.decimals,
+		bc_erc20_transaction.send_address AS `from`,
+		bc_erc20_transaction.receive_address AS `to`,
+		bc_erc20_transaction.`value`,
+		bc_erc20_transaction.`timestamp`
+	FROM
+		bc_erc20_transaction
+	LEFT JOIN bc_erc20_token ON bc_erc20_token.token_address = bc_erc20_transaction.token_address
+    where 1=1
+    <trim prefix=" and (" suffix=")" suffixOverrides="and">
+      <if test="tokenAddress != null">bc_erc20_transaction.token_address = #{tokenAddress,jdbcType=VARCHAR} and </if>
+      <if test="blockHash != null">block_hash = #{blockHash,jdbcType=VARCHAR} and </if>
+      <if test="blockNumber != null">block_number = #{blockNumber,jdbcType=BIGINT} and </if>
+      <if test="gas != null">gas = #{gas,jdbcType=BIGINT} and </if>
+      <if test="gasPrice != null">gas_price = #{gasPrice,jdbcType=BIGINT} and </if>
+      <if test="sendAddress != null">send_address = #{sendAddress,jdbcType=VARCHAR} and </if>
+      <if test="receiveAddress != null">receive_address = #{receiveAddress,jdbcType=VARCHAR} and </if>
+      <if test="value != null">value = #{value,jdbcType=VARCHAR} and </if>
+      <if test="timestamp != null">timestamp = #{timestamp,jdbcType=TIMESTAMP} and </if>
+	</trim>
+	ORDER BY bc_erc20_transaction.id DESC
 	limit #{start},#{pageSize}
   </select>
   

@@ -38,7 +38,6 @@ import com.ywq.ti.entity.BcCurrentBlock;
 import com.ywq.ti.entity.BcErc20Token;
 import com.ywq.ti.entity.BcErc20Transaction;
 import com.ywq.ti.entity.BcTransaction;
-import com.ywq.ti.socket.SpringWebSocketHandler;
 
 @Service
 @Transactional
@@ -59,8 +58,8 @@ public class EthBcService {
 	@Autowired
 	private BcErc20TransactionMapper tokenTxDao;
 
-	@Autowired
-	private SpringWebSocketHandler wsHandler;
+	//@Autowired
+	//private SpringWebSocketHandler wsHandler;
 
 	public BcCurrentBlock currentBlockNumber(String BcType) {
 		BcCurrentBlock currentBlock = currentBlockDao.selectCurrentBlock(TxType.ETH);
@@ -109,6 +108,7 @@ public class EthBcService {
 		List<BcErc20Transaction> tokenTxList = new ArrayList<BcErc20Transaction>();
 		List<BcMessage> msgList = new ArrayList<BcMessage>();
 
+		//TODO 根据TransactionReceip的status来剔除/标记失败的交易
 		for (BcTransaction tx : txList) {
 			tx.setTimestamp(block.getTimestamp());
 			String to = tx.getReceiveAddress();
@@ -171,7 +171,7 @@ public class EthBcService {
 		_currentBlock.setBlockNumber(currentBlock.getNumber().longValue() + 1);
 		currentBlockDao.updateCurrentBlock(_currentBlock);
 		// WebSocket处理消息（阻塞式）
-		wsHandler.notifyTxInfo(msgList);
+		//wsHandler.notifyTxInfo(msgList);
 	}
 
 	private BcMessage buildTokenMsg(BcErc20Transaction tokenTx) {

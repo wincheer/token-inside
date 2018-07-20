@@ -58,6 +58,6 @@ export default class TokenDetail extends wepy.page {
   background-color: #ebebeb;
   height: 2.3em;
   line-height: 2.3em;
-  color: #cfcfcf;
+  color: #000000;
 }
 </style>

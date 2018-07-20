@@ -1,12 +1,20 @@
 <template>
   <view class="page">
     <view class="page__hd">
-        <form bindsubmit="formSubmit">
-          <input placeholder="输入 Token 短名称，如 LAB" name="searchKey" />
-          <button formType="submit" class='head-button'>搜索</button>
-        </form>
+      <input placeholder="输入Token地址" confirm-type="search" bindconfirm="searchBtn" focus='ture'/>
     </view>
+    
     <view class="page__bd page__bd_spacing">
+        
+        <view class="weui-cells__title">关注的 Token</view>
+        <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__bd">
+                <repeat for="{{myTokens}}" key="index" index="index" item="item">
+                  <view class="weui-panel__hd" bindtap="choseToken" id="{{item.tokenAddress}}">{{item.tokenName}}({{item.symbol}})</view>
+                </repeat>
+            </view>
+        </view>
+
         <view class="weui-tab">
             <view class="weui-navbar">
                 <block wx:for="{{tabs}}" wx:key="*this">
@@ -16,47 +24,172 @@
                 </block>
                 <view class="weui-navbar__slider" style="left: {{sliderLeft}}px; transform: translateX({{sliderOffset}}px); -webkit-transform: translateX({{sliderOffset}}px);"></view>
             </view>
+            
             <view class="weui-tab__panel">
-                <view class="weui-tab__content" hidden="{{activeIndex != 0}}">选项一的内容</view>
-                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">选项二的内容</view>
-                <view class="weui-tab__content" hidden="{{activeIndex != 2}}">选项三的内容</view>
+              <!-- 基本信息 -->  
+              <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
+                <block wx:if="{{tokenInfo.tokenAddress}}">
+                  <view class="weui-cell">
+                    <!-- <view class="weui-cell__bd">地址</view> -->
+                    <!-- <view class="weui-cell__bd">地址</view> -->
+                    <view class="weui-media-box__desc">{{tokenInfo.tokenAddress}}</view>
+                  </view>
+                  <view class="weui-cell">
+                    <view class="weui-cell__bd">Token名称</view>
+                    <view class="weui-media-box__desc">{{tokenInfo.tokenName}}</view>
+                  </view>
+                  <view class="weui-cell">
+                      <view class="weui-cell__bd">Token标志</view>
+                      <view class="weui-media-box__desc">{{tokenInfo.symbol}}</view>
+                  </view>
+                  <view class="weui-cell">
+                      <view class="weui-cell__bd">发行量</view>
+                      <view class="weui-media-box__desc">{{tokenInfo.totalSupply}}</view>
+                  </view>
+                  <view class="weui-cell">
+                      <view class="weui-cell__bd">小数点</view>
+                      <view class="weui-media-box__desc">{{tokenInfo.decimals}}</view>
+                  </view>
+                  <view class="weui-btn-area">  
+                      <button type="default" plain="true" bindtap="watchToken">{{watchTitle}}</button>                 
+                    </view>
+                </block>
+              </view>
+                
+                <view class="weui-tab__content" hidden="{{activeIndex != 1}}">
+                  <view class="weui-panel__bd">
+                    <repeat for="{{tokenTxList}}" key="index" index="index" item="item">
+                      <view class="weui-media-box weui-media-box_text" bindtap="showTx" id="{{item.hash}}">
+                        <view class="weui-media-box__title weui-media-box__title_in-text" bindtap="showTx" id="{{item.hash}}">{{item.timestamp}}</view>
+                        <view class="weui-media-box__desc" bindtap="showTx" id="{{item.hash}}">{{item.value}} ({{item.symbol}})</view>
+                      </view>
+                    </repeat>
+                  </view>
+                </view>
             </view>
         </view>
-
-        <!-- <view class="weui-cells__title">Token 列表</view>
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cells weui-cells_after-title">
-            <repeat for="{{tokenList}}" key="index" index="index" item="item">
-              <navigator url="/pages/token/token-detail" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-                  <view class="weui-cell__bd">{{item.tokenName}}</view>
-                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-              </navigator>
-            </repeat>
-          </view>
-      </view> -->
     </view>
 </view>
 </template>
 
 <script>
 import wepy from 'wepy';
+import { SELECT_TOKEN_INFO } from '@/config/api.js';
+import formatTime from '@/utils/timeFormatter.js';
 export default class Token extends wepy.page {
   config = {
     navigationBarTitleText: 'TokenInside - Token'
   };
 
   data = {
-    tabs: ["基本信息", "交易", "图表"],
+    tabs: ['基本信息', '交易'],
     activeIndex: 0,
     sliderOffset: 0,
-    sliderLeft: 0
-  };
-  methods = {
+    sliderLeft: 0,
 
+    myTokens: [],
+    hasThisToken: false, //查询出来的token是否包含在我关注的列表中
+    watchTitle: '关注',
+    tokenInfo: {},
+    tokenTxList: []
   };
+  methods = {};
   tabClick(e) {
-      this.sliderOffset = e.currentTarget.offsetLeft,
-      this.activeIndex = e.currentTarget.id
+    (this.sliderOffset = e.currentTarget.offsetLeft),
+      (this.activeIndex = e.currentTarget.id);
+  }
+  searchBtn(e) {
+    //console.log(e.detail)
+    this.selectTokenInfo(e.detail.value);
+  }
+  selectTokenInfo(token_address) {
+    wx.showToast({
+      title: '加载中',
+      icon: 'loading',
+      duration: 10000 //10秒
+    });
+    var _this = this;
+    let params = {
+      tokenAddress: token_address
+    };
+    SELECT_TOKEN_INFO(params).then(res => {
+      wx.hideToast();
+      if (res.token) {
+        _this.tokenInfo = res.token;
+        for (var _token of _this.myTokens) {
+          if (_token.tokenAddress === _this.tokenInfo.tokenAddress) {
+            _this.hasThisToken = true;
+            _this.watchTitle = '取消关注';
+            break;
+          }
+        }
+      } else {
+        _this.tokenInfo = {};
+        wx.showToast({
+          title: '未找到',
+          icon: 'none',
+          duration: 2000
+        });
+      }
+      _this.tokenTxList = res.txList;
+      for (var tx of _this.tokenTxList) {
+        tx.timestamp = formatTime.formatTime(
+          Number(tx.timestamp),
+          'Y-M-D h:m:s'
+        );
+      }
+      _this.$apply();
+    });
+  }
+  watchToken(e) {
+    if (this.hasThisToken) {
+      //取消关注
+      //var index = this.myTokens.indexOf(this.tokenInfo);
+      var index = -1;
+      for (var i = 0; i < this.myTokens.length; i++) {
+        if (this.myTokens[i].tokenAddress === this.tokenInfo.tokenAddress) {
+          index = i;
+          break;
+        }
+      }
+      if (index > -1) {
+        this.myTokens.splice(index, 1);
+        this.hasThisToken = false;
+        this.watchTitle = '关注';
+      }
+    } else {
+      //关注
+      this.myTokens.push(this.tokenInfo);
+      this.hasThisToken = true;
+      this.watchTitle = '取消关注';
+    }
+    this.$parent.globalData.myTokens = this.myTokens;
+    wx.setStorageSync('myTokens', this.myTokens);
+  }
+  choseToken(e) {
+    this.selectTokenInfo(e.target.id);
+  }
+  showTx(e) {
+    var selectedTx;
+    for (var tx of this.tokenTxList) {
+      if (tx.hash === e.target.id) {
+        selectedTx = tx;
+        break;
+      }
+    }
+    wx.navigateTo({
+      url:
+        '/pages/tx-detail?token=' +
+        selectedTx.symbol +
+        '&from=' +
+        selectedTx.from +
+        '&to=' +
+        selectedTx.to +
+        '&value=' +
+        selectedTx.value +
+        '&datetime=' +
+        selectedTx.timestamp
+    });
   }
   //Page生命~周期
   onLoad() {
@@ -67,6 +200,7 @@ export default class Token extends wepy.page {
   }
   onShow() {
     // Do something when page show.
+    this.myTokens = this.$parent.globalData.myTokens;
   }
   onHide() {
     // Do something when page hide.
@@ -78,11 +212,7 @@ export default class Token extends wepy.page {
   /**
    * 页面上拉触底事件的处理函数
    */
-  onReachBottom() {
-    
-  }
-
-
+  onReachBottom() {}
 }
 </script>
 

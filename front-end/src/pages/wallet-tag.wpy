@@ -1,0 +1,109 @@
+<template>
+  <view class="page">
+    <view class="page__hd">
+        <view class="page__title">钱包标签</view>
+        <view class="page__desc">一个简单易记的名字，方便自己记忆。若为空删则除标签。</view>
+    </view>
+    <view class="page__bd page__bd_spacing">
+      <view class="weui-cells__title">{{wallet.address}}</view>
+      <form bindsubmit="tagWallet">
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">标签</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" name="tag" placeholder="请输入..." value="{{wallet.tag}}" focus='ture'/>
+                </view>
+            </view>
+          </view>
+          <view class="weui-btn-area">
+            <button class="weui-btn" type="primary" formType="submit">确定</button>
+          </view>
+        </form>
+    </view>
+</view>
+</template>
+
+<script>
+import wepy from 'wepy';
+export default class WalletTag extends wepy.page {
+  config = {
+    navigationBarTitleText: 'TokenInside - 钱包 - 标签'
+  };
+  data = {
+    wallet:''
+  };
+  methods = {};
+  tagWallet(e){
+    var tagValue = e.detail.value.tag.trim();
+    var myWallets = this.$parent.globalData.myWallets;
+    var hasThisWallet = false; //是否已关注了这个钱包（做了标签）
+    for(var _wallet of myWallets){
+      if(_wallet.address===this.wallet.address){
+        hasThisWallet = true;
+        break;
+      }
+    }
+    if(hasThisWallet){
+      if(tagValue === ''){
+        //删除
+        var index = -1;
+        for (var i = 0; i < myWallets.length; i++) {
+          if (myWallets[i].address === this.wallet.address){
+            index = i;
+            break;
+          }
+        }
+        if(index > -1) myWallets.splice(index, 1);
+      } else {
+        //更新
+        for(var _wallet of myWallets){
+          if(_wallet.address===this.wallet.address){
+            _wallet.tag = e.detail.value.tag
+          }
+        }
+      }
+    } else {
+      if(tagValue != ''){
+        //新增
+        myWallets.push({address:this.wallet.address,tag:tagValue})
+      }
+    }
+    this.$parent.globalData.myWallets = myWallets;
+    wx.setStorageSync('myWallets', myWallets); 
+
+    wx.navigateBack();
+  };
+  
+  //Page生命周期
+  onLoad(options) {
+    this.wallet = options;
+    console.log(options)
+  };
+  onReady() {
+    // Do something when page ready.
+  };
+  onShow() {
+    // Do something when page show.
+  };
+  onHide() {
+    // Do something when page hide.
+  };
+  onUnload() {
+    // Do something when page close.
+  }
+}
+</script>
+
+<style lang="less">
+.placeholder {
+  margin: 5px;
+  padding: 0 10px;
+  text-align: center;
+  background-color: #ebebeb;
+  height: 2.3em;
+  line-height: 2.3em;
+  color: #cfcfcf;
+}
+</style>
