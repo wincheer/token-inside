@@ -106,7 +106,9 @@ export default class Graph extends wepy.page {
     chart.on('click', function(params) {
       // 控制台打印数据的名称
       var msg = Number(params.data.value).toFixed(2) +'['+params.data.token+']'
-      console.log(msg);
+      //msg = params.data.source +'->'+ params.data.target + ', ' + msg
+      //console.log(msg); //A -> B,100 [ETH]
+      wx.showToast({ title: msg, icon: 'none', duration: 2000 });
     });
     
     return chart;
