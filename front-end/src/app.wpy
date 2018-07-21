@@ -4,8 +4,7 @@ import Promise from 'promise-polyfill';
 import 'wepy-async-function';
 import { SELECT_APP_USER } from '@/config/api.js';
 
-let socketOpen = false; //连接状态
-let socketMsgQueue = []; //消息队列
+
 export default class extends wepy.app {
   config = {
     pages: [
@@ -42,6 +41,10 @@ export default class extends wepy.app {
   onLaunch() {
     this.getUserInfo();
     this.initEthereum();
+
+    //const emitter = new EventEmitter()
+    //emitter.setMaxListeners(100)//指定一个最大监听数量
+    //emitter.setMaxListeners(0)//或者关闭最大监听阈值
   }
 
   getUserInfo() {

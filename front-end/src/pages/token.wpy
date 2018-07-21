@@ -82,7 +82,7 @@ export default class Token extends wepy.page {
   };
 
   data = {
-    tabs: ['基本信息', '交易'],
+    tabs: ['基本信息', '最新交易'],
     activeIndex: 0,
     sliderOffset: 0,
     sliderLeft: 0,
@@ -100,7 +100,13 @@ export default class Token extends wepy.page {
   }
   searchBtn(e) {
     //console.log(e.detail)
-    this.selectTokenInfo(e.detail.value);
+    //检查Token地址的合法性 0x开头，长度42
+    if (e.detail.value.substr(0, 2) === '0x' && e.detail.value.length === 42) {
+      this.selectTokenInfo(e.detail.value);
+    } else {
+      wx.showToast({ title: 'Token地址不合格', icon: 'none', duration: 2000 });
+      //this.wallet_address = '';
+    }
   }
   selectTokenInfo(token_address) {
     wx.showToast({

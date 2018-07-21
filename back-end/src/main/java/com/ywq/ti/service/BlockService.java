@@ -50,7 +50,7 @@ public class BlockService {
 		Map<String,Object> params = new HashMap<String, Object>();
 		params.put("tokenAddress", token.getTokenAddress());
 		params.put("start", 0);
-		params.put("pageSize", 100);
+		params.put("pageSize", 20);
 		
 		return tokenTxDao.selectErc20TransactionListPageRaw(params);
 	}
@@ -59,7 +59,7 @@ public class BlockService {
 		
 		Map<String,Object> params = new HashMap<String, Object>();		
 		params.put("start", 0);
-		params.put("pageSize", 100);
+		params.put("pageSize", 50);
 		
 		params.put("sendAddress", walletAddress);
 		List<BcTransaction> fromTxList = txDao.selectTransactionListPage(params);
@@ -78,7 +78,7 @@ public class BlockService {
 		
 		Map<String,Object> params = new HashMap<String, Object>();		
 		params.put("start", 0);
-		params.put("pageSize", 100);
+		params.put("pageSize", 10);
 		
 		params.put("txType", TxType.ETHER_TRANSFER); //Ether交易
 		
@@ -98,7 +98,7 @@ public class BlockService {
 		
 		Map<String,Object> params = new HashMap<String, Object>();		
 		params.put("start", 0);
-		params.put("pageSize", 100);
+		params.put("pageSize", 50);
 		
 		params.put("sendAddress", walletAddress);
 		List<BcErc20Transaction> fromTxList = tokenTxDao.selectErc20TransactionListPage(params);
@@ -117,7 +117,7 @@ public class BlockService {
 		
 		Map<String,Object> params = new HashMap<String, Object>();		
 		params.put("start", 0);
-		params.put("pageSize", 100);
+		params.put("pageSize", 10);
 		
 		params.put("sendAddress", walletAddress);
 		List<Map<String,Object>> fromTxList = tokenTxDao.selectErc20TransactionListPageRaw(params);

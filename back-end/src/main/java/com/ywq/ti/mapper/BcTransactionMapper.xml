@@ -85,7 +85,7 @@
 		bc_transaction.`timestamp`
 	FROM
 		bc_transaction
-    where 1=1
+    where 1=1 and bc_transaction.`value` != '0'
     <trim prefix=" and (" suffix=")" suffixOverrides="and">
       <if test="blockHash != null">block_hash = #{blockHash,jdbcType=VARCHAR} and </if>
       <if test="blockNumber != null">block_number = #{blockNumber,jdbcType=BIGINT} and </if>

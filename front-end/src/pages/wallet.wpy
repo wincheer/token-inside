@@ -66,7 +66,7 @@
 
 <script>
 import wepy from 'wepy';
-import { SELECT_WALLET_INFO } from '@/config/api.js';
+import { SELECT_WALLET_INFO,QUERY_BALANCE_OF } from '@/config/api.js';
 import formatTime from '@/utils/timeFormatter.js';
 export default class Wallet extends wepy.page {
   config = {
@@ -83,7 +83,7 @@ export default class Wallet extends wepy.page {
 
     token: 'ETH',
     wallet_address: '',
-    balanceOf: {},
+    balanceOf: -1,
     balanceOfEth: -1,
     txList: [],
     tokenTxList: []
@@ -94,8 +94,17 @@ export default class Wallet extends wepy.page {
       (this.activeIndex = e.currentTarget.id);
   }
   queryBalance(e) {
+    var _this = this;
     var myTokenAddress = this.myTokens[e.detail.value].tokenAddress;
-    console.log(myTokenAddress);
+    var decimals = this.myTokens[e.detail.value].decimals+'';
+    var params = {token_address:myTokenAddress,wallet_address:this.wallet_address,decimals:decimals}
+    QUERY_BALANCE_OF(params).then(res =>{
+      _this.token = this.myTokens[e.detail.value].symbol;
+      _this.balanceOfEth = res.balanceOfEth;
+
+      _this.$apply();
+    })
+    //console.log(myTokenAddress);
   }
   addTag() {
     console.log('添加标签');
@@ -124,6 +133,7 @@ export default class Wallet extends wepy.page {
     };
     SELECT_WALLET_INFO(params).then(res => {
       wx.hideToast();
+      _this.token = 'ETH'
       _this.balanceOfEth = res.balanceOfEth;
       _this.txList = res.txList;
       _this.tokenTxList = res.tokenTxList;

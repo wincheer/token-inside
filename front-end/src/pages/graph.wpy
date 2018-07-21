@@ -1,5 +1,6 @@
 <template>  
   <view class="container">
+    <view class="weui-cells__title">{{msg}}</view>
     <ec-canvas id="mychart-dom" canvas-id="mychart" ec="{{ ec }}"></ec-canvas>
   </view>
 </template>  
@@ -12,7 +13,7 @@ import { SELECT_GRAPH_INFO } from '@/config/api.js';
 var wallet_address = '';
 export default class Graph extends wepy.page {
   config = {
-    navigationBarTitleText: '关联交易',
+    navigationBarTitleText: '最新关联交易',
     usingComponents: { 'ec-canvas': '../assets/ec-canvas/ec-canvas' }
   };
 
@@ -26,9 +27,7 @@ export default class Graph extends wepy.page {
   methods = {};
 
   onReady() {
-    this.$wxpage.selectComponent(
-      '#mychart-dom'
-    ).data.ec.onInit = this.initChart;
+    this.$wxpage.selectComponent('#mychart-dom').data.ec.onInit = this.initChart;
     this.$wxpage.selectComponent('#mychart-dom').init();
   }
   onLoad(options) {
@@ -36,8 +35,16 @@ export default class Graph extends wepy.page {
     wallet_address = options.wallet;
   }
 
+  initChart1(xxx){
+
+  }
+
   initChart(canvas, width, height) {
-    var _this = this.parent;
+    wx.showToast({
+      title: '加载中',
+      icon: 'loading',
+      duration: 10000 //10秒
+    });
     const chart = echarts.init(canvas, null, {
       width: width,
       height: height
@@ -48,14 +55,15 @@ export default class Graph extends wepy.page {
       wallet_address: wallet_address
     };
     SELECT_GRAPH_INFO(params).then(res => {
-      // console.log(res);
+      wx.hideToast();
+      console.log(res);
       chart.setOption({
         // animationDurationUpdate: 1500,
         // animationEasingUpdate: 'quinticInOut',
         series: [
           {
-            type: 'graph',
-            layout: 'force',
+            type: 'sankey', //sankey,graph
+            layout: 'force', //circular,force
             symbolSize: 15,
             //symbolSize: (amount, params) => {return amount;}, //根据交易金额来控制大小，考虑到大小差异过大，可以尝试log函数来处理一下
             roam: true,
@@ -97,8 +105,10 @@ export default class Graph extends wepy.page {
 
     chart.on('click', function(params) {
       // 控制台打印数据的名称
-      console.log(params);
+      var msg = Number(params.data.value).toFixed(2) +'['+params.data.token+']'
+      console.log(msg);
     });
+    
     return chart;
   }
 }

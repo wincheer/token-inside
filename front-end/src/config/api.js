@@ -7,4 +7,5 @@ export const SELECT_APP_USER = (params) => { return wepy.request({ method: 'POST
 
 export const SELECT_TOKEN_INFO = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectTokenInfo`, data: params }).then(res => res.data); };
 export const SELECT_WALLET_INFO = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectWalletInfo`, data: params }).then(res => res.data); };
+export const QUERY_BALANCE_OF = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/queryBalanceOf`, data: params }).then(res => res.data); };
 export const SELECT_GRAPH_INFO = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectGraphInfo`, data: params }).then(res => res.data); };
