@@ -36,6 +36,9 @@
                 <view class="weui-tab__content" hidden="{{activeIndex != 0}}">
                   <block wx:if="{{balanceOfEth != -1}}">  
                     <view class="weui-cell">
+                      <view class="weui-cell__ft" style="overflow:hidden; white-space:nowrap;text-overflow:ellipsis;"><text selectable='true'>{{wallet_address}}</text></view>
+                    </view>
+                    <view class="weui-cell">
                       <view class="weui-cell__bd">Token名称</view>
                       <view class="weui-cell__ft">{{token}}</view>
                     </view>
@@ -43,10 +46,13 @@
                       <view class="weui-cell__bd">余额</view>
                       <view class="weui-cell__ft">{{balanceOfEth}}</view>
                     </view>
-                    <view class="weui-btn-area">
+                    <view class="weui-btn-area" wx:if="{{myTokens.length > 0}}">
                       <picker bindchange="queryBalance" range="{{myTokens}}" range-key="tokenName">
                           <button type="default">其它Token余额</button>
                       </picker>                    
+                    </view> 
+                    <view class="weui-btn-area" wx:if="{{myTokens.length == 0}}">
+                      <button type="default" disabled="true">请先关注 Token</button>
                     </view>
                     <view class="weui-btn-area">
                       <button type="default" bindtap="goWalletTag">给钱包打标签</button>

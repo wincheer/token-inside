@@ -1,6 +1,8 @@
 import WxCanvas from './wx-canvas';
 import * as echarts from './echarts';
 
+let ctx;
+
 Component({
   properties: {
     canvasId: {
@@ -18,17 +20,15 @@ Component({
   },
 
   ready: function () {
-    setTimeout(() => {
-      if (!this.data.ec) {
-        console.warn('组件需绑定 ec 变量，例：<ec-canvas id="mychart-dom-bar" '
-          + 'canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>');
-        return;
-      }
+    if (!this.data.ec) {
+      console.warn('组件需绑定 ec 变量，例：<ec-canvas id="mychart-dom-bar" '
+        + 'canvas-id="mychart-bar" ec="{{ ec }}"></ec-canvas>');
+      return;
+    }
 
-      if (!this.data.ec.lazyLoad) {
-        this.init();
-      }
-    }, 10)
+    if (!this.data.ec.lazyLoad) {
+      this.init();
+    }
   },
 
   methods: {
@@ -43,9 +43,9 @@ Component({
         return;
       }
 
-      const ctx = wx.createCanvasContext(this.data.canvasId, this);
+      ctx = wx.createCanvasContext(this.data.canvasId, this);
 
-      const canvas = new WxCanvas(ctx);
+      const canvas = new WxCanvas(ctx, this.data.canvasId);
 
       echarts.setCanvasCreator(() => {
         return canvas;
@@ -59,21 +59,17 @@ Component({
         else if (this.data.ec && this.data.ec.onInit) {
           this.chart = this.data.ec.onInit(canvas, res.width, res.height);
         }
-        else if (this.data.ec && this.data.ec.options) {
-          // 添加接收 options 传参
-          const ec = this.data.ec
-          function initChart(canvas, width, height) {
-            const chart = echarts.init(canvas, null, {
-              width: width,
-              height: height
-            });
-            canvas.setChart(chart);
-            chart.setOption(ec.options);
-            return chart;
-          }
-          this.chart = initChart(canvas, res.width, res.height);
-        }
       }).exec();
+    },
+
+    canvasToTempFilePath(opt) {
+      if (!opt.canvasId) {
+        opt.canvasId = this.data.canvasId;
+      }
+      
+      ctx.draw(true, () => {
+        wx.canvasToTempFilePath(opt, this);
+      });
     },
 
     touchStart(e) {

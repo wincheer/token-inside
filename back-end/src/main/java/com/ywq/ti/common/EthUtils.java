@@ -27,9 +27,16 @@ public class EthUtils {
 	public static ERC20TokenData DecodeErc20Data(String data) {
 
 		ERC20TokenData erc20Data = new ERC20TokenData();
-		//ERC20标准的transfer函数的指令hash前8字节为(0x)a9059cbb，ERC223为0xc0ee0b8a
-		erc20Data.setToAddress("0x"+data.substring(10, 74).replaceAll("^0+(?!$)", ""));
-		erc20Data.setValue(new BigInteger(data.substring(74).replaceAll("^0+(?!$)", ""),16));
+		if (data.substring(0, 10).equals("0xa9059cbb")) {
+			// transfer|to|value
+			erc20Data.setToAddress("0x" + data.substring(10, 10 + 64).replaceAll("^0+(?!$)", ""));
+			erc20Data.setValue(new BigInteger(data.substring(10 + 64, 10 + 64 + 64).replaceAll("^0+(?!$)", ""), 16));
+		} else if (data.substring(0, 10).equals("0x23b872dd")) {
+			// transferFrom|from|to|value
+			erc20Data.setFromAddress("0x" + data.substring(10, 10 + 64).replaceAll("^0+(?!$)", ""));
+			erc20Data.setToAddress("0x" + data.substring(10 + 64, 10 + 64 + 64).replaceAll("^0+(?!$)", ""));
+			erc20Data.setValue(new BigInteger(data.substring(10 + 64 + 64, 10 + 64 + 64 + 64).replaceAll("^0+(?!$)", ""), 16));
+		}
 
 		return erc20Data;
 	}
@@ -51,12 +58,12 @@ public class EthUtils {
 		BigInteger totalSupply = BigInteger.valueOf(0);
 		BigInteger decimals = BigInteger.valueOf(18);
 		try {
-			totalSupply = token.totalSupply().send(); //一定会有值，否则无效代币
+			totalSupply = token.totalSupply().send(); // 一定会有值，否则无效代币
 			decimals = token.decimals().send();
 			symbol = token.symbol().send();
 			tokenName = token.name().send();
 		} catch (ContractCallException cce) {
-			log.warn("当前地址不是有效的 ERC20 Token 合约：" + cce.getMessage()  + " - " +  tokenAddress);
+			log.warn("当前地址不是有效的 ERC20 Token 合约：" + cce.getMessage() + " - " + tokenAddress);
 		} catch (Exception e) {
 			log.error("载入合约异常：" + e.getMessage() + " - " + tokenAddress);
 		}
@@ -69,7 +76,7 @@ public class EthUtils {
 
 		return erc20Token;
 	}
-	
+
 	/**
 	 * 查询指定代币的钱包余额
 	 * @param web3j
@@ -78,11 +85,11 @@ public class EthUtils {
 	 * @return
 	 * @throws Exception
 	 */
-	public static BigInteger balanceOf(Web3j web3j, String tokenAddress,String owner) throws Exception {
-		
-		HumanStandardToken token = load(web3j,tokenAddress);
+	public static BigInteger balanceOf(Web3j web3j, String tokenAddress, String owner) throws Exception {
+
+		HumanStandardToken token = load(web3j, tokenAddress);
 		BigInteger balance = token.balanceOf(owner).send();
-		
+
 		return balance;
 	}
 
@@ -94,9 +101,10 @@ public class EthUtils {
 	 */
 	public static HumanStandardToken load(Web3j web3j, String contractAddress) {
 
-		//String fromAddress = "0xa70fda378fa295ab08722a534f894b8794445d10"; // 任意有效钱包地址
+		// String fromAddress = "0xa70fda378fa295ab08722a534f894b8794445d10"; //
+		// 任意有效钱包地址
 		String fromAddress = "0x0000000000000000000000000000000000000000";
-		
+
 		BigInteger GAS_PRICE = BigInteger.valueOf(250000L);
 		BigInteger GAS_LIMIT = BigInteger.valueOf(12000000000L);
 

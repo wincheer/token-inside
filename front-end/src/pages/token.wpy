@@ -41,7 +41,7 @@
                   <view class="weui-cell">
                     <!-- <view class="weui-cell__bd">地址</view> -->
                     <!-- <view class="weui-cell__bd">地址</view> -->
-                    <view class="weui-media-box__desc">{{tokenInfo.tokenAddress}}</view>
+                    <view class="weui-media-box__desc" style="overflow:hidden; white-space:nowrap;text-overflow:ellipsis;"><text selectable='true'>{{tokenInfo.tokenAddress}}</text></view>
                   </view>
                   <view class="weui-cell">
                     <view class="weui-cell__bd">Token名称</view>

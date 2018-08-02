@@ -1,7 +1,6 @@
 package com.ywq.ti.service;
 
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import org.web3j.protocol.core.methods.response.EthBlock.TransactionResult;
 import org.web3j.protocol.core.methods.response.Transaction;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
-import com.ywq.ti.common.BcMessage;
 import com.ywq.ti.common.ERC20Token;
 import com.ywq.ti.common.ERC20TokenData;
 import com.ywq.ti.common.EthUtils;
@@ -58,8 +56,8 @@ public class EthBcService {
 	@Autowired
 	private BcErc20TransactionMapper tokenTxDao;
 
-	//@Autowired
-	//private SpringWebSocketHandler wsHandler;
+	// @Autowired
+	// private SpringWebSocketHandler wsHandler;
 
 	public BcCurrentBlock currentBlockNumber(String BcType) {
 		BcCurrentBlock currentBlock = currentBlockDao.selectCurrentBlock(TxType.ETH);
@@ -106,17 +104,17 @@ public class EthBcService {
 		List<BcErc20Token> tokenList = new ArrayList<BcErc20Token>();
 		List<BcContract> contractList = new ArrayList<BcContract>();
 		List<BcErc20Transaction> tokenTxList = new ArrayList<BcErc20Transaction>();
-		List<BcMessage> msgList = new ArrayList<BcMessage>();
+		// List<BcMessage> msgList = new ArrayList<BcMessage>();
 
-		//TODO 根据TransactionReceip的status来剔除/标记失败的交易
+		// TODO 根据TransactionReceip的status来剔除/标记失败的交易，并记录实际消耗的gas
 		for (BcTransaction tx : txList) {
+			TransactionReceipt txr = web3j.ethGetTransactionReceipt(tx.getHash()).send().getResult();
 			tx.setTimestamp(block.getTimestamp());
 			String to = tx.getReceiveAddress();
 			if (to == null) {
 				// 交易：创建智能合约
 				tx.setTxType(TxType.CREATE_CONTRACT);
 				tx.setReceiveAddress("");
-				TransactionReceipt txr = web3j.ethGetTransactionReceipt(tx.getHash()).send().getResult();
 				ERC20Token token = EthUtils.getTokenInfo(web3j, txr.getContractAddress());
 				if (token.isValid()) {
 					// 添加Token记录
@@ -132,15 +130,29 @@ public class EthBcService {
 					contractSet.add(txr.getContractAddress());
 				}
 			} else {
-				if (tokenSet.contains(to) && tx.getData().startsWith("0xa9059cbb")
-						&& tx.getData().trim().length() == 138) {
+				/**
+				 * ERC20标准方法签名编码：
+				 * name()：0x06fdde03
+				 * symbol()：0x95d89b41
+				 * totalSupply()：0x18160ddd
+				 * decimals()：0x313ce567
+				 * balanceOf(address)：0x70a08231
+				 * !!! transfer(address,uint256)： 0xa9059cbb
+				 * approve(address,uint256)：0x095ea7b3
+				 * !!! transferFrom(address,address,uint256)： 0x23b872dd
+				 * allowance(address,address)： 0xdd62ed3e
+				 * 
+				 */
+				if (tokenSet.contains(to)
+						&& ((tx.getData().startsWith("0xa9059cbb") && tx.getData().trim().length() >= 138)
+								|| (tx.getData().startsWith("0x23b872dd") && tx.getData().trim().length() >= 202))) {
 					tx.setTxType(TxType.TOKEN_TRANSFER);
 					log.info("交易类型：Token交易 - " + to);
 					BcErc20Transaction tokenTx = buildTokenTx(tx);
 					tokenTxList.add(tokenTx);
 					// 发送给在线订阅者 token + wallet
-					msgList.add(buildTokenMsg(tokenTx));
-					msgList.add(buildWalletMsg(tx));
+					// msgList.add(buildTokenMsg(tokenTx));
+					// msgList.add(buildWalletMsg(tx));
 
 				} // token交易
 				else if (contractSet.contains(to)) {
@@ -151,7 +163,7 @@ public class EthBcService {
 					tx.setTxType(TxType.ETHER_TRANSFER);
 					log.info("交易类型：以太币交易 ");
 					// 发送给在线订阅者 wallet
-					msgList.add(buildWalletMsg(tx));
+					// msgList.add(buildWalletMsg(tx));
 				} // ETH交易
 			}
 		}
@@ -171,35 +183,36 @@ public class EthBcService {
 		_currentBlock.setBlockNumber(currentBlock.getNumber().longValue() + 1);
 		currentBlockDao.updateCurrentBlock(_currentBlock);
 		// WebSocket处理消息（阻塞式）
-		//wsHandler.notifyTxInfo(msgList);
+		// wsHandler.notifyTxInfo(msgList);
 	}
 
-	private BcMessage buildTokenMsg(BcErc20Transaction tokenTx) {
-		BcMessage msg = new BcMessage();
-		
-		msg.setTopic("token");
-		msg.setToken(tokenTx.getTokenAddress()); //下一步转换为token_name或symbol
-		msg.setFrom(tokenTx.getSendAddress());
-		msg.setTo(tokenTx.getReceiveAddress());
-		msg.setValue(new BigInteger(tokenTx.getValue())); //String -> BigInteger, TODO 转换为标准单位 
-		msg.setTimestamp(tokenTx.getTimestamp());
-		
-		return msg;
-	}
-
-	private BcMessage buildWalletMsg(BcTransaction tx) {
-
-		BcMessage msg = new BcMessage();
-		
-		msg.setTopic("wallet");
-		msg.setToken("");
-		msg.setFrom(tx.getSendAddress());
-		msg.setTo(tx.getReceiveAddress());
-		msg.setValue(tx.getValue());
-		msg.setTimestamp(tx.getTimestamp());
-		
-		return msg;
-	}
+	// private BcMessage buildTokenMsg(BcErc20Transaction tokenTx) {
+	// BcMessage msg = new BcMessage();
+	//
+	// msg.setTopic("token");
+	// msg.setToken(tokenTx.getTokenAddress()); //下一步转换为token_name或symbol
+	// msg.setFrom(tokenTx.getSendAddress());
+	// msg.setTo(tokenTx.getReceiveAddress());
+	// msg.setValue(new BigInteger(tokenTx.getValue())); //String -> BigInteger,
+	// 转换为标准单位
+	// msg.setTimestamp(tokenTx.getTimestamp());
+	//
+	// return msg;
+	// }
+	//
+	// private BcMessage buildWalletMsg(BcTransaction tx) {
+	//
+	// BcMessage msg = new BcMessage();
+	//
+	// msg.setTopic("wallet");
+	// msg.setToken("");
+	// msg.setFrom(tx.getSendAddress());
+	// msg.setTo(tx.getReceiveAddress());
+	// msg.setValue(tx.getValue());
+	// msg.setTimestamp(tx.getTimestamp());
+	//
+	// return msg;
+	// }
 
 	/**
 	 * 将原生Block转换为本地持久化对象Block
@@ -270,7 +283,7 @@ public class EthBcService {
 		erc20Tx.setBlockNumber(tx.getBlockNumber());
 		erc20Tx.setGas(tx.getGas());
 		erc20Tx.setGasPrice(tx.getGasPrice());
-		erc20Tx.setSendAddress(tx.getSendAddress());
+		erc20Tx.setSendAddress(txData.getFromAddress() == null ? tx.getSendAddress() : txData.getFromAddress());
 		erc20Tx.setReceiveAddress(txData.getToAddress());
 		erc20Tx.setValue(txData.getValue().toString());
 		erc20Tx.setTimestamp(tx.getTimestamp());

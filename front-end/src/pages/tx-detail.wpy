@@ -12,11 +12,11 @@
               </view>
               <view class="weui-media-box weui-media-box_text">
                 <view class="weui-media-box__title weui-media-box__title_in-text">发起</view>
-                <view class="weui-media-box__desc" bindtap="showGraph" id="{{tx.from}}">{{tx.from}}</view>
+                <view class="weui-media-box__desc" bindtap="showGraph" id="{{tx.from}}"><text selectable='true'>{{tx.from}}</text></view>
               </view>
               <view class="weui-media-box weui-media-box_text">
                 <view class="weui-media-box__title weui-media-box__title_in-text">接收</view>
-                <view class="weui-media-box__desc" bindtap="showGraph" id="{{tx.to}}">{{tx.to}}</view>
+                <view class="weui-media-box__desc" bindtap="showGraph" id="{{tx.to}}"><text selectable='true'>{{tx.to}}</text></view>
               </view>
               <view class="weui-media-box weui-media-box_text">
                 <view class="weui-media-box__title weui-media-box__title_in-text">金额</view>
@@ -44,7 +44,7 @@ export default class TxDetails extends wepy.page {
   methods = {};
   showGraph(e){
     //console.log(e.target.id);
-    var wallet_address = e.target.id
+    var wallet_address = e.currentTarget.id
     wx.navigateTo({
       url:
         '/pages/graph?wallet=' + wallet_address

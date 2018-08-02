@@ -1,7 +1,8 @@
 import wepy from 'wepy';
 
 // 服务器地址
-const HOST = 'https://ti.commercelabcn.com/';
+const HOST = 'https://ti.commercelabcn.com';
+// const HOST = 'http://139.159.238.218:80';
 // Restful 接口
 export const SELECT_APP_USER = (params) => { return wepy.request({ method: 'POST', url: `${HOST}/selectAppUser`, data: params }).then(res => res.data); };
 

@@ -31,7 +31,7 @@ public class SpringWebSocketHandler extends TextWebSocketHandler {
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-		Long userId = Long.valueOf(session.getUri().getQuery().substring(8)); //TODO 调整用户uid
+		Long userId = Long.valueOf(session.getUri().getQuery().substring(8)); 
 		log.debug("用户 "+userId+" 成功建立websocket连接!");
 		//String userId = (String) session.getAttributes().get(USER_ID);
 		online_users.put(userId, session);

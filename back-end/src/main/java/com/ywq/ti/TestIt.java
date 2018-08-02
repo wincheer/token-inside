@@ -1,37 +1,39 @@
 package com.ywq.ti;
 
-import java.math.BigInteger;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.DefaultBlockParameter;
-import org.web3j.protocol.core.DefaultBlockParameterNumber;
 import org.web3j.protocol.http.HttpService;
 
+import com.ywq.ti.common.ERC20TokenData;
 import com.ywq.ti.common.EthUtils;
 
 public class TestIt {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(TestIt.class);
-	
+
 	@Value("${web3j.client-address}")
 	private String WEB3_CLIENT_URL;
 
 	public static void main(String[] args) throws Exception {
-		
-		//Web3jConfig web3jConfig = new Web3jConfig();
-		//Web3j web3j = Web3j.build(web3jConfig.buildService(WEB3_CLIENT_URL));
+
 		Web3j web3j = Web3j.build(new HttpService("https://mainnet.infura.io/gKGM2GtuAn4ubcw1pRBp"));
-		
-		String walletAddress = "0x0975ca9f986eee35f5cbba2d672ad9bc8d2a0844";
-		
-		Long maxBlockBumber = (web3j.ethBlockNumber().send().getBlockNumber()).longValue();
-		DefaultBlockParameter blockParam = new DefaultBlockParameterNumber(maxBlockBumber);
-		BigInteger balanceOfEth = web3j.ethGetBalance(walletAddress, blockParam).send().getBalance();
-		
-		System.out.println(EthUtils.fixBigIntegerValue(balanceOfEth, BigInteger.valueOf(18L)));
-		
+
+		String t0  = "0xa9059cbb000000000000000000000000790f91bd5d1c5cc4739ae91300db89e1c1303c930000000000000000000000000000000000000000000000000000000000001388";
+		String t1  = "0xa9059cbb000000000000000000000000bfe465e7eb5a2928b5bf22bef93ad06089dc617900000000000000000000000000000000000000000000000000071afd498d0000";
+		String t2  = "0xa9059cbb000000000000000000000000bfe465e7eb5a2928b5bf22bef93ad06089dc617900000000000000000000000000000000000000000000000000038d7ea4c68000";
+
+		//65831758a5a17b1e23fed2c6f6e358aa8eebd1f9,fbb1b73c4f0bda4f67dca266ce6ef42f520fbb98,237755422200000000000
+		String tf0 = "0x23b872dd00000000000000000000000065831758a5a17b1e23fed2c6f6e358aa8eebd1f9000000000000000000000000fbb1b73c4f0bda4f67dca266ce6ef42f520fbb9800000000000000000000000000000000000000000000000ce384f0cf0605b000";
+		//999bc1bc6b69a3e6e9d64317594e7b2774db07cf,	b9690e5dc2f9882c5befa3d59d2ff21433e4a61f,10000000
+		String tf1 = "0x23b872dd000000000000000000000000999bc1bc6b69a3e6e9d64317594e7b2774db07cf000000000000000000000000b9690e5dc2f9882c5befa3d59d2ff21433e4a61f000000000000000000000000000000000000000000000000000000000098968023b872dd000000000000000000000000999bc1bc6b69a3e6e9d64317594e7b2774db07cf000000000000000000000000b9690e5dc2f9882c5befa3d59d2ff21433e4a61f0000000000000000000000000000000000000000000000000000000000989680";
+		//	e0b7927c4af23765cb51314a0e0521a9645f0e2a,1f14c8687f345f99c99a5d169ffa153af7b89840(token),771775591800000
+		String tf2 = "0x23b872dd000000000000000000000000e0b7927c4af23765cb51314a0e0521a9645f0e2a0000000000000000000000001f14c8687f345f99c99a5d169ffa153af7b898400000000000000000000000000000000000000000000000000002bded01fedcc0";
+
+		ERC20TokenData data = EthUtils.DecodeErc20Data(tf2);
+		log.info(data.getFromAddress() + " -> " + data.getToAddress() + " : " + data.getValue());
+		log.info(tf2.length() + "");
+
 	}
 }
