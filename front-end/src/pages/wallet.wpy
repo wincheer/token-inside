@@ -1,14 +1,25 @@
 <template>
   <view class="page">
     <view class="page__hd">
-        <input placeholder="输入钱包地址" confirm-type="search" bindconfirm="searchBtn" focus='ture'/>
+        <!-- <input placeholder="输入钱包地址" confirm-type="search" bindconfirm="searchBtn" focus='ture'/> -->
+        <form bindsubmit="searchBtn">
+          <view class="weui-flex">
+              <view class="weui-flex__item">
+                <input type="text" name="searchVal" class="weui-search-bar__input" placeholder="输入钱包地址" focus='ture'/>
+              </view>
+          </view>
+          <view>
+            <button formType="submit" size="mini">查询</button>
+            <button formType="reset" size="mini">清除</button>
+          </view>
+        </form>
     </view>
     <view class="page__bd page__bd_spacing">
         <view class="weui-cells__title">标签钱包</view>
-        <view class="weui-panel weui-panel_access">
-            <view class="weui-panel__bd">
+        <view class="weui-cells weui-cells_after-title">
+            <view>
                 <repeat for="{{myWallets}}" key="index" index="index" item="item">
-                  <view class="weui-panel__hd" bindtap="choseWallet" id="{{item.address}}">{{item.tag}}</view>
+                  <view class="weui-cell weui-cell_access" bindtap="choseWallet" id="{{item.address}}">{{item.tag}}</view>
                 </repeat>
             </view>
         </view>
@@ -37,7 +48,9 @@
                           <button type="default">其它Token余额</button>
                       </picker>                    
                     </view>
-                    <view bindtap="goWalletTag" class="weui-cell__ft weui-cell__ft_in-access">给钱包打标签</view>
+                    <view class="weui-btn-area">
+                      <button type="default" bindtap="goWalletTag">给钱包打标签</button>
+                    </view>
                   </block>
                 </view>
 
@@ -73,7 +86,7 @@ export default class Wallet extends wepy.page {
     navigationBarTitleText: 'TokenInside - 钱包',
   };
   data = {
-    tabs: ['基本信息', '交易', 'Token交易'],
+    tabs: ['基本信息', 'ETH交易', 'Token交易'],
     activeIndex: 0,
     sliderOffset: 0,
     sliderLeft: 0,
@@ -111,9 +124,10 @@ export default class Wallet extends wepy.page {
     wx.na;
   }
   searchBtn(e) {
+    var wallet_address = e.detail.value.searchVal
     //检查钱包地址的合法性 0x开头，长度42
-    if (e.detail.value.substr(0, 2) === '0x' && e.detail.value.length === 42) {
-      this.selectWalletInfo(e.detail.value);
+    if (wallet_address.substr(0, 2) === '0x' && wallet_address.length === 42) {
+      this.selectWalletInfo(wallet_address);
       //this.wallet_address = e.detail.value;
     } else {
       wx.showToast({ title: '钱包地址不合格', icon: 'none', duration: 2000 });

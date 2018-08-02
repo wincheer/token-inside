@@ -1,16 +1,25 @@
 <template>
   <view class="page">
     <view class="page__hd">
-      <input placeholder="输入Token地址" confirm-type="search" bindconfirm="searchBtn" focus='ture'/>
+      <form bindsubmit="searchBtn">
+        <view class="weui-flex">
+            <view class="weui-flex__item">
+              <input type="text" name="searchVal" class="weui-search-bar__input" placeholder="输入Token地址" focus='ture'/>
+            </view>
+        </view>
+        <view>
+          <button formType="submit" size="mini">查询</button>
+          <button formType="reset" size="mini">清除</button>
+        </view>
+      </form>
     </view>
     
     <view class="page__bd page__bd_spacing">
-        
         <view class="weui-cells__title">关注的 Token</view>
-        <view class="weui-panel weui-panel_access">
-            <view class="weui-panel__bd">
+        <view class="weui-cells weui-cells_after-title">
+            <view>
                 <repeat for="{{myTokens}}" key="index" index="index" item="item">
-                  <view class="weui-panel__hd" bindtap="choseToken" id="{{item.tokenAddress}}">{{item.tokenName}}({{item.symbol}})</view>
+                  <view class="weui-cell weui-cell_access" bindtap="choseToken" id="{{item.tokenAddress}}">{{item.tokenName}}({{item.symbol}})</view>
                 </repeat>
             </view>
         </view>
@@ -98,11 +107,16 @@ export default class Token extends wepy.page {
     (this.sliderOffset = e.currentTarget.offsetLeft),
       (this.activeIndex = e.currentTarget.id);
   }
+  formSubmit(e){
+    console.log(e.detail.value)
+  }
   searchBtn(e) {
     //console.log(e.detail)
     //检查Token地址的合法性 0x开头，长度42
-    if (e.detail.value.substr(0, 2) === '0x' && e.detail.value.length === 42) {
-      this.selectTokenInfo(e.detail.value);
+    //var token_address = e.detail.value
+    var token_address = e.detail.value.searchVal
+    if (token_address.substr(0, 2) === '0x' && token_address.length === 42) {
+      this.selectTokenInfo(token_address);
     } else {
       wx.showToast({ title: 'Token地址不合格', icon: 'none', duration: 2000 });
       //this.wallet_address = '';
@@ -122,6 +136,8 @@ export default class Token extends wepy.page {
       wx.hideToast();
       if (res.token) {
         _this.tokenInfo = res.token;
+        //格式化发行总量
+        _this.tokenInfo.totalSupply = res.token.totalSupply.replace(/(\d)(?=(\d{3})+\.)/g, '$1,')
         for (var _token of _this.myTokens) {
           if (_token.tokenAddress === _this.tokenInfo.tokenAddress) {
             _this.hasThisToken = true;

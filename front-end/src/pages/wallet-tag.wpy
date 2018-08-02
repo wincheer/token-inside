@@ -2,7 +2,7 @@
   <view class="page">
     <view class="page__hd">
         <view class="page__title">钱包标签</view>
-        <view class="page__desc">一个简单易记的名字，方便自己记忆。若为空删则除标签。</view>
+        <view class="page__desc">给钱包打标签，方便下次快速查询。若为空删则除标签。</view>
     </view>
     <view class="page__bd page__bd_spacing">
       <view class="weui-cells__title">{{wallet.address}}</view>

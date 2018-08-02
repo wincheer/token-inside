@@ -104,7 +104,7 @@ export default class extends wepy.app {
   font-family: -apple-system-font, Helvetica Neue, Helvetica, sans-serif;
 }
 .page__hd {
-  padding: 40px;
+  padding: 20px 40px 20px 40px;
 }
 .page__bd {
   padding-bottom: 40px;
